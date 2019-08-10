@@ -11,6 +11,10 @@ import UIKit
 class AppsSearchController: UICollectionViewController {
     let cellID = "Cell"
     var results = [Result]()
+    //參數searchResultsController,表示要秀出搜尋結果的Controller
+    //但如果是在同一個Controller內則可傳nil
+    let searchController = UISearchController(searchResultsController: nil)
+    
     //有了下方init,初始化CollectionViewController時就不需要傳入collecitonViewLayout參數
     init() {
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -20,9 +24,14 @@ class AppsSearchController: UICollectionViewController {
         super.viewDidLoad()
         self.collectionView.backgroundColor = .white
         self.collectionView!.register(SearchResultCell.self, forCellWithReuseIdentifier: cellID)
+        setUpSearchController()
         fetchITunesData()
     }
-    
+    fileprivate func setUpSearchController(){
+        navigationItem.searchController = searchController
+        //search bar 固定顯示在畫面上
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
     fileprivate func fetchITunesData(){
         NetworkService.shared.fetchDataFromITunes { [weak self] (results, error) in
             guard let self = self else { return }
