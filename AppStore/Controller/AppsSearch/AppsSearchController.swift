@@ -21,6 +21,7 @@ class AppsSearchController: UICollectionViewController {
         self.collectionView.backgroundColor = .white
         self.collectionView!.register(SearchResultCell.self, forCellWithReuseIdentifier: cellID)
         fetchITunesData()
+        //test change in GitHub
     }
     
     fileprivate func fetchITunesData(){
