@@ -7,3 +7,18 @@
 //
 
 import Foundation
+
+struct SearchResult: Decodable {
+    let resultCount: Int
+    let results: [Result]
+}
+
+struct Result: Decodable {
+    let trackName: String
+    let primaryGenreName: String
+    //有可能無值,故為Optional
+    var averageUserRating: Float?
+    let screenshotUrls: [String]
+    //icon
+    let artworkUrl100: String
+}
