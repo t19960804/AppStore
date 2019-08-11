@@ -26,7 +26,6 @@ class AppsSearchController: UICollectionViewController {
         self.collectionView!.register(SearchResultCell.self, forCellWithReuseIdentifier: cellID)
         setUpSearchController()
         fetchITunesData()
-        //test change in GitHub
     }
     fileprivate func setUpSearchController(){
         navigationItem.searchController = searchController
