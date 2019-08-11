@@ -19,8 +19,8 @@ class NetworkService {
     //如果在Controller寫fetchDataFromITunes寫(),就不需要completion handler
     //因為URLSession.shared.dataTask本身就是async,可以在裡面直接處理
     //但這邊獨立出一個Network Layer,所以為了跟controller之間溝通,故透過completion handler回傳
-    func fetchDataFromITunes(completion: @escaping ([Result],Error?) -> Void){
-        let urlString = "https://itunes.apple.com/search?term=instagram&entity=software"
+    func fetchDataFromITunes(searchKeyWords: String, completion: @escaping ([Result],Error?) -> Void){
+        let urlString = "https://itunes.apple.com/search?term=\(searchKeyWords)&entity=software"
         guard let url = URL(string: urlString) else { return }
         //為何需要.resume()?
         //URLSessionTask 物件想成產生一個下載或上傳資料的任務。但它只是產生任務，並不代表任務開始執行，要等呼叫 resume 才會開始執行

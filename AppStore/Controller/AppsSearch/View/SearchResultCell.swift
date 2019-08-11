@@ -10,6 +10,7 @@ import UIKit
 import SDWebImage
 
 class SearchResultCell: UICollectionViewCell {
+    static let cellID = "Cell"
 
     var result: Result? {
         didSet {

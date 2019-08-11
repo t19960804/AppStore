@@ -19,7 +19,6 @@ extension UIView {
         self.leftAnchor.constraint(equalTo: superView.leftAnchor, constant: padding.left).isActive = true
         self.rightAnchor.constraint(equalTo: superView.rightAnchor, constant: -padding.right).isActive = true
         self.bottomAnchor.constraint(equalTo: superView.bottomAnchor, constant: -padding.bottom).isActive = true
-        
     }
 }
 extension UIStackView {
