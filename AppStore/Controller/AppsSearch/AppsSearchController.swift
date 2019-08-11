@@ -35,7 +35,6 @@ class AppsSearchController: UICollectionViewController {
         collectionView!.register(SearchResultCell.self, forCellWithReuseIdentifier: SearchResultCell.cellID)
         setUpSearchController()
         setUpConstraints()
-        //test change in GitHub
     }
     fileprivate func setUpConstraints(){
         collectionView.addSubview(emptyResultLabel)
