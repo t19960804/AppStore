@@ -22,3 +22,4 @@ struct Result: Decodable {
     //icon
     let artworkUrl100: String
 }
+

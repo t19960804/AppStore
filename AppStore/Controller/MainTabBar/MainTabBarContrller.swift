@@ -13,12 +13,12 @@ class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let appNavController = creatNavController(viewController: UIViewController(), title: "Apps", imageName: "apps")
+        let appNavController = creatNavController(viewController: AppsPageController(), title: "Apps", imageName: "apps")
         let searchNavController = creatNavController(viewController: AppsSearchController(), title: "Search", imageName: "search")
         let todayNavController = creatNavController(viewController: UIViewController(), title: "Today", imageName: "today_icon")
 
         
-        self.viewControllers = [searchNavController,todayNavController,appNavController]
+        self.viewControllers = [appNavController,searchNavController,todayNavController]
     }
     fileprivate func creatNavController(viewController: UIViewController, title: String, imageName: String) -> UINavigationController{
         //設定NanBar的title,不可以直接對UINavigationController設定,會無效

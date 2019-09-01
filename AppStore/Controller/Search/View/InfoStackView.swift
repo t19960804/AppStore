@@ -21,23 +21,20 @@ class InfoStackView: UIStackView {
     }()
     let appNameLabel: UILabel = {
         let lb = UILabel()
-        lb.text = "Instagram"
         return lb
     }()
     let appCategoryLabel: UILabel = {
         let lb = UILabel()
-        lb.text = "Phone & Video"
         return lb
     }()
     let appRatingLabel: UILabel = {
         let lb = UILabel()
-        lb.text = "9.26M"
         return lb
     }()
     let getTheAppButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.setTitle("GET", for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 14)
+        btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         btn.setTitleColor(.black, for: .normal)
         btn.widthAnchor.constraint(equalToConstant: 80).isActive = true
         btn.backgroundColor = UIColor(white: 0.95, alpha: 1)

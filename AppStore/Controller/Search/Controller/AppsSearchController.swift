@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AppsSearchController: UICollectionViewController {
+class AppsSearchController: BaseListController {
     var results = [Result]()
     //參數searchResultsController,表示要秀出搜尋結果的Controller
     //但如果是在同一個Controller內則可傳nil
@@ -23,13 +23,8 @@ class AppsSearchController: UICollectionViewController {
         lb.textAlignment = .center
         return lb
     }()
-    //有了下方init,初始化CollectionViewController時就不需要傳入collecitonViewLayout參數
-    init() {
-        super.init(collectionViewLayout: UICollectionViewFlowLayout())
-    }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         collectionView!.register(SearchResultCell.self, forCellWithReuseIdentifier: SearchResultCell.cellID)
@@ -79,10 +74,6 @@ class AppsSearchController: UICollectionViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchResultCell.cellID, for: indexPath) as! SearchResultCell
         cell.result = results[indexPath.item]
         return cell
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
