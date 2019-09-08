@@ -10,6 +10,15 @@ import UIKit
 
 class AppsPageHeaderCell: UICollectionViewCell {
     static let cellID = "Cell"
+    var feed: SocialApp? {
+        didSet {
+            companyLabel.text = feed!.name
+            titleLabel.text = feed!.tagline
+            if let url = URL(string: feed!.imageUrl) {
+                appImageView.sd_setImage(with: url)
+            }
+        }
+    }
     
     let companyLabel: UILabel = {
         let lb = UILabel()
@@ -27,7 +36,8 @@ class AppsPageHeaderCell: UICollectionViewCell {
     }()
     lazy var appImageView: UIImageView = {
         let iv = UIImageView()
-        iv.backgroundColor = .orange
+        iv.backgroundColor = .white
+        iv.contentMode = .scaleAspectFill
         iv.layer.cornerRadius = 8
         iv.clipsToBounds = true
         iv.widthAnchor.constraint(equalToConstant: frame.width).isActive = true

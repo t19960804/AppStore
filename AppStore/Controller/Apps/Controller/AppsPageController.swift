@@ -11,14 +11,29 @@ import UIKit
 class AppsPageController: BaseListController {
     
     var appGroups = [AppsFeed]()
+    var socialAppGroups = [SocialApp]()
     
+    let activityIndicator: UIActivityIndicatorView = {
+        let ai = UIActivityIndicatorView(style: .whiteLarge)
+        ai.translatesAutoresizingMaskIntoConstraints = false
+        ai.color = .black
+        ai.startAnimating()
+        ai.hidesWhenStopped = true
+        return ai
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         collectionView.register(AppsPageHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: AppsPageHeader.id)
         collectionView!.register(AppsPageCell.self, forCellWithReuseIdentifier: AppsPageCell.id)
+        setUpConstraints()
         fetchData()
         
+    }
+    fileprivate func setUpConstraints(){
+        view.addSubview(activityIndicator)
+        activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     fileprivate func fetchData(){
         //Fetch資料的三個任務完成順序不一定,所以要在三個任務都執行完才更新UI,避免閃爍
@@ -60,8 +75,19 @@ class AppsPageController: BaseListController {
             }
             dispatchGroup.leave()
         }
+        dispatchGroup.enter()
+        NetworkService.shared.fetchSocialApps { (socialApps, error) in
+            if let error = error{
+                print("Fetch SoicalApps Fail:\(error)")
+                return
+            }
+            //可以用optional binding或是給予空陣列
+            self.socialAppGroups = socialApps ?? []
+            dispatchGroup.leave()
+        }
         //任務都執行完的completion
         dispatchGroup.notify(queue: .main) {
+            self.activityIndicator.stopAnimating()
             self.collectionView.reloadData()
         }
     }
@@ -69,7 +95,9 @@ class AppsPageController: BaseListController {
         return appGroups.count
     }
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: AppsPageHeader.id, for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: AppsPageHeader.id, for: indexPath) as! AppsPageHeader
+        header.appsTopMainController.appsFeed = socialAppGroups
+        header.appsTopMainController.collectionView.reloadData()
         return header
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -82,7 +110,7 @@ class AppsPageController: BaseListController {
 }
 extension AppsPageController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 0)
+        return CGSize(width: view.frame.width, height: 300)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 class AppsTopMainController: BaseListController {
+    var appsFeed = [SocialApp]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -20,10 +22,11 @@ class AppsTopMainController: BaseListController {
         }
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return appsFeed.count
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppsPageHeaderCell.cellID, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppsPageHeaderCell.cellID, for: indexPath) as! AppsPageHeaderCell
+        cell.feed = appsFeed[indexPath.item]        
         return cell
     }
     

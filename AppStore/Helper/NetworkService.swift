@@ -56,6 +56,24 @@ class NetworkService {
         let urlString = "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-free/all/25/explicit.json"
         fetchDataFromAPI(with: urlString, completion: completion)
     }
+    func fetchSocialApps(completion: @escaping ([SocialApp]?, Error?) -> Void){
+        let urlString = "https://api.letsbuildthatapp.com/appstore/social"
+        guard let url = URL(string: urlString) else { return }
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(nil,error)
+                return
+            }
+            guard let data = data else { return }
+            do {
+                let feed = try JSONDecoder().decode([SocialApp].self, from: data)
+                completion(feed, nil)
+            } catch {
+                completion(nil,error)
+            }
+        }
+        task.resume()
+    }
     fileprivate func fetchDataFromAPI(with urlString: String, completion: @escaping (AppsFeed?, Error?) -> Void){
         guard let url = URL(string: urlString) else { return }
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
