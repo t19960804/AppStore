@@ -48,13 +48,13 @@ class AppsSearchController: BaseListController {
         searchController.searchBar.delegate = self
     }
     fileprivate func fetchITunesData(with keywords: String){
-        NetworkService.shared.fetchDataFromITunes(searchKeyWords: keywords) { [weak self] (results, error) in
+        NetworkService.shared.fetchDataFromITunes(searchKeyWords: keywords) { [weak self] (searchResult, error) in
             guard let self = self else { return }
             if let error = error {
                 print("Fetch ITunes Data failed:\(error)")
                 return
             }
-            self.results = results
+            self.results = searchResult?.results ?? []
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }
