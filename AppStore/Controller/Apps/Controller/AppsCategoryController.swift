@@ -8,21 +8,19 @@
 
 import UIKit
 
-class AppsCategoryController: BaseListController {
+class AppsCategoryController: HorizontalSnappingController {
     let interItemSpacing: CGFloat = 6
     let padding: CGFloat = 12
     
     var feedResults: [FeedResult]?
+    var itemSelectedHandler: ((FeedResult) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .white
         collectionView!.register(AppsCategoryCell.self, forCellWithReuseIdentifier: AppsCategoryCell.id)
-    
-        if let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout {
-            flowLayout.scrollDirection = .horizontal
-        }
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -34,6 +32,11 @@ class AppsCategoryController: BaseListController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppsCategoryCell.id, for: indexPath) as! AppsCategoryCell
         cell.feedResult = feedResults?[indexPath.item]
         return cell
+    }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let results = feedResults else { return }
+        let result = results[indexPath.item]
+        itemSelectedHandler?(result)
     }
 }
 
@@ -49,7 +52,7 @@ extension AppsCategoryController: UICollectionViewDelegateFlowLayout {
     }
     //item跟section四周的距離
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: padding, left: 16, bottom: padding, right: 16)
+        return UIEdgeInsets(top: padding, left: 0, bottom: padding, right: 0)
     }
     
 }

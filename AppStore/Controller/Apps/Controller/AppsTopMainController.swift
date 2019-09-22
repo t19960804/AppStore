@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class AppsTopMainController: BaseListController {
+class AppsTopMainController: HorizontalSnappingController {
     var appsFeed = [SocialApp]()
     
     override func viewDidLoad() {
@@ -17,9 +17,7 @@ class AppsTopMainController: BaseListController {
         view.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .white
         collectionView.register(AppsPageHeaderCell.self, forCellWithReuseIdentifier: AppsPageHeaderCell.cellID)
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.scrollDirection = .horizontal
-        }
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return appsFeed.count
@@ -36,6 +34,6 @@ extension AppsTopMainController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: view.frame.width - 50, height: view.frame.height - 10)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10)
+        return UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
     }
 }

@@ -41,7 +41,7 @@ class AppsSearchController: BaseListController {
         //search bar 固定顯示在畫面上
         navigationItem.hidesSearchBarWhenScrolling = false
         //預設為true,當點擊searchController準備搜尋時,searchController的底層會變暗,false時不會變暗
-        searchController.dimsBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
         //若ViewController的definesPresentationContext為true,當searchController被“present"時,則只會在該ViewController上
         //而不是整個UINavigationController(因為有些頁面不需要searchController）
         definesPresentationContext = true

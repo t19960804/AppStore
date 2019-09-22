@@ -105,6 +105,13 @@ class AppsPageController: BaseListController {
         cell.titleLabel.text = appGroups[indexPath.item].feed.title
         cell.appsCategoryController.feedResults = appGroups[indexPath.item].feed.results
         cell.appsCategoryController.collectionView.reloadData()
+        cell.appsCategoryController.itemSelectedHandler = { [weak self] appResult in
+            //因為appsCategoryController本身沒有UINavigationController
+            //所以在這實作navigation push
+            let detailController = AppDetailController()
+            detailController.appID = appResult.id
+            self?.navigationController?.pushViewController(detailController, animated: true)
+        }
         return cell
     }
 }

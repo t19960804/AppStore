@@ -18,3 +18,8 @@ extension UILabel {
         self.textColor = textColor
     }
 }
+extension UIColor {
+    static func setRGB(r: CGFloat, g: CGFloat, b: CGFloat, alpha: CGFloat = 1) -> UIColor{
+        return UIColor(red: r/255, green: g/255, blue: b/255, alpha: alpha)
+    }
+}
