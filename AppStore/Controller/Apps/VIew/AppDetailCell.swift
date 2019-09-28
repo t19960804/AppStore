@@ -21,7 +21,6 @@ class AppDetailCell: UICollectionViewCell {
     let appImageView: UIImageView = {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.backgroundColor = .red
         iv.layer.cornerRadius = 18
         iv.clipsToBounds = true
         return iv
@@ -30,7 +29,6 @@ class AppDetailCell: UICollectionViewCell {
         let lb = UILabel()
         lb.translatesAutoresizingMaskIntoConstraints = false
         lb.text = "Fortnite"
-        lb.backgroundColor = .brown
         lb.font = UIFont.boldSystemFont(ofSize: 24)
         lb.numberOfLines = 2
         return lb
@@ -39,7 +37,6 @@ class AppDetailCell: UICollectionViewCell {
         let lb = UILabel()
         lb.translatesAutoresizingMaskIntoConstraints = false
         lb.text = "Works with: iPhone SE,6S,7,8,X,XS,XR,iPad Mini4"
-        lb.backgroundColor = .orange
         lb.numberOfLines = 2
         return lb
     }()
@@ -57,7 +54,6 @@ class AppDetailCell: UICollectionViewCell {
         let lb = UILabel()
         lb.translatesAutoresizingMaskIntoConstraints = false
         lb.text = "What's New"
-        lb.backgroundColor = .orange
         lb.font = UIFont.boldSystemFont(ofSize: 20)
         return lb
     }()
@@ -65,8 +61,7 @@ class AppDetailCell: UICollectionViewCell {
         let lb = UILabel()
         lb.translatesAutoresizingMaskIntoConstraints = false
         lb.text = "Release Notes"
-        lb.backgroundColor = .purple
-        lb.font = UIFont.boldSystemFont(ofSize: 18)
+        lb.font = UIFont.systemFont(ofSize: 18)
         lb.numberOfLines = 0
         return lb
     }()
@@ -93,13 +88,20 @@ class AppDetailCell: UICollectionViewCell {
         sv.spacing = 16
         return sv
     }()
+    let seperateLine: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor(white: 0.9, alpha: 1)
+        return v
+    }()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .red
         setUpConstraints()
     }
     fileprivate func setUpConstraints(){
         addSubview(topStack)
+        addSubview(seperateLine)
+        
         topStack.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
         topStack.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
         topStack.rightAnchor.constraint(equalTo: rightAnchor, constant: -20).isActive = true
@@ -110,6 +112,11 @@ class AppDetailCell: UICollectionViewCell {
         
         getAppButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
         getAppButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        
+        seperateLine.leftAnchor.constraint(equalTo: topStack.leftAnchor).isActive = true
+        seperateLine.rightAnchor.constraint(equalTo: topStack.rightAnchor).isActive = true
+        seperateLine.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        seperateLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
     }
     required init?(coder aDecoder: NSCoder) {
