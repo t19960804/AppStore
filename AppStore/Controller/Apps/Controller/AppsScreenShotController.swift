@@ -11,6 +11,7 @@ import UIKit
 class AppsScreenShotController: HorizontalSnappingController {
     var app: Result? {
         didSet {
+            
             collectionView.reloadData()
         }
     }

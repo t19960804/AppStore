@@ -76,13 +76,13 @@ class AppsPageController: BaseListController {
             dispatchGroup.leave()
         }
         dispatchGroup.enter()
-        NetworkService.shared.fetchSocialApps { (socialApps, error) in
+        NetworkService.shared.fetchSocialApps { [weak self] (socialApps, error) in
             if let error = error{
                 print("Fetch SoicalApps Fail:\(error)")
                 return
             }
             //可以用optional binding或是給予空陣列
-            self.socialAppGroups = socialApps ?? []
+            self?.socialAppGroups = socialApps ?? []
             dispatchGroup.leave()
         }
         //任務都執行完的completion

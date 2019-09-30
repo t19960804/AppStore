@@ -40,6 +40,10 @@ class NetworkService {
         let urlString = "https://itunes.apple.com/lookup?id=\(id)"
         fetchGenericDataFromItunesAPI(urlString: urlString, completion: completion)
     }
+    func fetchAppReviews(id: String, completion: @escaping (UserReviews?, Error?) -> Void){
+        let urlString = "https://itunes.apple.com/rss/customerreviews/page=1/id=\(id)/sortby=mostrecent/json?l=en&cc=us"
+        fetchGenericDataFromItunesAPI(urlString: urlString, completion: completion)
+    }
     //如果在Controller寫fetchDataFromITunes寫(),就不需要completion handler
     //因為URLSession.shared.dataTask本身就是async,可以在裡面直接處理
     //但這邊獨立出一個Network Layer,所以為了跟controller溝通,故透過completion handler回傳

@@ -8,8 +8,7 @@
 
 import Foundation
 
-//最外層的object也要包進去
-//遇到Dictionary就創Model
+
 struct AppsFeed: Decodable {
     let feed: Feed
 }
