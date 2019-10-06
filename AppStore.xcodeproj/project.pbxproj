@@ -215,15 +215,11 @@
 		0BF2D7DD2307B02100874DF1 /* VIew */ = {
 			isa = PBXGroup;
 			children = (
+				0BF826382349DEFE008887B3 /* AppDetail */,
 				0BF2D7DF2307B04700874DF1 /* AppsPageHeader.swift */,
 				0BF2D7E22307B90E00874DF1 /* AppsPageCell.swift */,
 				0BF2D7F02311276100874DF1 /* AppsPageHeaderCell.swift */,
 				0BF2D7EC2308F79C00874DF1 /* AppsCategoryCell.swift */,
-				0BF2D7FF2335DC3700874DF1 /* AppDetailCell.swift */,
-				0BB0D502233F083100F64725 /* AppsPreviewCell.swift */,
-				0BB0D506233F119100F64725 /* AppsScreenShotCell.swift */,
-				0BB0D508234060E300F64725 /* AppsReviewCell.swift */,
-				0BB0D50C234065F900F64725 /* UserReviewCell.swift */,
 			);
 			path = VIew;
 			sourceTree = "<group>";
@@ -231,12 +227,10 @@
 		0BF2D7DE2307B02700874DF1 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				0BF826392349DF52008887B3 /* AppDetail */,
 				0BF2D7D82307A92A00874DF1 /* AppsPageController.swift */,
 				0BF2D7EE2310EE2E00874DF1 /* AppsTopMainController.swift */,
 				0BF2D7E82307E65B00874DF1 /* AppsCategoryController.swift */,
-				0BF2D7FB232DE37900874DF1 /* AppDetailController.swift */,
-				0BB0D504233F0C8800F64725 /* AppsScreenShotController.swift */,
-				0BB0D50A2340627600F64725 /* AppsReviewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -249,6 +243,28 @@
 				0BB0D50E2341A56900F64725 /* UserReview.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		0BF826382349DEFE008887B3 /* AppDetail */ = {
+			isa = PBXGroup;
+			children = (
+				0BF2D7FF2335DC3700874DF1 /* AppDetailCell.swift */,
+				0BB0D502233F083100F64725 /* AppsPreviewCell.swift */,
+				0BB0D508234060E300F64725 /* AppsReviewCell.swift */,
+				0BB0D506233F119100F64725 /* AppsScreenShotCell.swift */,
+				0BB0D50C234065F900F64725 /* UserReviewCell.swift */,
+			);
+			path = AppDetail;
+			sourceTree = "<group>";
+		};
+		0BF826392349DF52008887B3 /* AppDetail */ = {
+			isa = PBXGroup;
+			children = (
+				0BF2D7FB232DE37900874DF1 /* AppDetailController.swift */,
+				0BB0D504233F0C8800F64725 /* AppsScreenShotController.swift */,
+				0BB0D50A2340627600F64725 /* AppsReviewController.swift */,
+			);
+			path = AppDetail;
 			sourceTree = "<group>";
 		};
 		8BD9ABAE7A81431CFD688BF8 /* Frameworks */ = {
@@ -494,7 +510,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -549,7 +565,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

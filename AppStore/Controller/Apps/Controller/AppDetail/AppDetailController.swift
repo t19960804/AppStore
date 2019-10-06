@@ -44,6 +44,7 @@ class AppDetailController: BaseListController {
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
+        collectionView.contentInset.bottom = 16
         collectionView.register(AppDetailCell.self, forCellWithReuseIdentifier: AppDetailCell.cellID)
         collectionView.register(AppsPreviewCell.self, forCellWithReuseIdentifier: AppsPreviewCell.cellID)
         collectionView.register(AppsReviewCell.self, forCellWithReuseIdentifier: AppsReviewCell.cellID)
@@ -94,7 +95,7 @@ extension AppDetailController: UICollectionViewDelegateFlowLayout {
         case .Preview:
             cellHeight = 500
         case .UserReview:
-            cellHeight = 280
+            cellHeight = 220
         }
         return CGSize(width: view.frame.width, height: cellHeight)
 
@@ -102,6 +103,7 @@ extension AppDetailController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 30
     }
+    
 }
 //CaseIterable > 將enum當成array使用
 enum SortOfCell: CaseIterable {

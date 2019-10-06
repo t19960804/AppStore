@@ -21,6 +21,16 @@ struct ReviewEntry: Decodable {
     let author: Author
     let title: Label
     let content: Label
+    
+    //因為JSON上Key的包含特別字元,Swift無法識別,所以將Key做改名
+    //規則1: enum名稱要叫"CodingKeys"
+    //規則2: 服從String(因為raw value為須為String) / CodingKey 協議
+    //規則3: 需寫入每個strucy內的屬性,若需要改名的再將JSON上的Key填入該case的raw value
+    let rate: Label
+    enum CodingKeys: String, CodingKey {
+        case author, title, content
+        case rate = "im:rating"
+    }
 }
 struct Author: Decodable {
     let name: Label

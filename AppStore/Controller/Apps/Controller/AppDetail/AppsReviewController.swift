@@ -12,6 +12,9 @@ class AppsReviewController: HorizontalSnappingController {
     
     var reviews: UserReviews? {
         didSet {
+//            reviews!.feed.entry.forEach { (entry) in
+//                print(entry.rate.label)
+//            }
             collectionView.reloadData()
         }
     }
@@ -31,6 +34,11 @@ class AppsReviewController: HorizontalSnappingController {
             cell.authorLabel.text = review.author.name.label
             cell.titleLabel.text = review.title.label
             cell.contentLabel.text = review.content.label
+            let stars = cell.starsStackView.arrangedSubviews
+            for i in stars.indices {
+                let isNeedToBeHidden = i >= Int(review.rate.label)!
+                stars[i].alpha = isNeedToBeHidden ? 0 : 1
+            }
         }
         return cell
     }
