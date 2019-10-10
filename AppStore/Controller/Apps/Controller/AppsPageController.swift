@@ -108,8 +108,7 @@ class AppsPageController: BaseListController {
         cell.appsCategoryController.itemSelectedHandler = { [weak self] appResult in
             //因為appsCategoryController本身沒有UINavigationController
             //所以在這實作navigation push
-            let detailController = AppDetailController()
-            detailController.appID = appResult.id
+            let detailController = AppDetailController(appID: appResult.id)
             self?.navigationController?.pushViewController(detailController, animated: true)
         }
         return cell

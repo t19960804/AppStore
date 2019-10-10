@@ -9,37 +9,21 @@
 import UIKit
 
 class AppDetailController: BaseListController {
-    var appID: String? {
-        didSet {
-            dispatchGroup.enter()
-            NetworkService.shared.fetchAppDetail(id: appID!) { [weak self] (result, error) in
-                if let error = error {
-                    print(error)
-                    return
-                }
-                self?.app = result?.results.first
-                self?.dispatchGroup.leave()
-            }
-            
-            dispatchGroup.enter()
-            NetworkService.shared.fetchAppReviews(id: appID!) { [weak self] (reviews, error) in
-                if let error = error {
-                    print(error)
-                    return
-                }
-                self?.reviews = reviews
-                self?.dispatchGroup.leave()
-            }
-            
-            dispatchGroup.notify(queue: .main) {
-                self.collectionView.reloadData()
-            }
-            
-        }
-    }
+    //SearchController / AppsController透過appID進入DetailController
+    //appID就是Controller之間的"依賴"
+    let appID: String
     var app: Result?
     var reviews: UserReviews?
     let dispatchGroup = DispatchGroup()
+    
+    //依賴注入,強迫開發者要傳入appID
+    init(appID: String){
+        self.appID = appID
+        super.init()
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +33,32 @@ class AppDetailController: BaseListController {
         collectionView.register(AppsPreviewCell.self, forCellWithReuseIdentifier: AppsPreviewCell.cellID)
         collectionView.register(AppsReviewCell.self, forCellWithReuseIdentifier: AppsReviewCell.cellID)
         navigationController?.navigationBar.prefersLargeTitles = false
+        fetchAppDeatilData()
+    }
+    fileprivate func fetchAppDeatilData(){
+        dispatchGroup.enter()
+        NetworkService.shared.fetchAppDetail(id: appID) { [weak self] (result, error) in
+            if let error = error {
+                print(error)
+                return
+            }
+            self?.app = result?.results.first
+            self?.dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        NetworkService.shared.fetchAppReviews(id: appID) { [weak self] (reviews, error) in
+            if let error = error {
+                print(error)
+                return
+            }
+            self?.reviews = reviews
+            self?.dispatchGroup.leave()
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.collectionView.reloadData()
+        }
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return SortOfCell.allCases.count

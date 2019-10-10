@@ -21,8 +21,10 @@ struct Result: Decodable {
     let screenshotUrls: [String]
     //icon
     let artworkUrl100: String
-    let formattedPrice: String
+    let formattedPrice: String?
     let description: String
-    let releaseNotes: String
+    var releaseNotes: String?
+    let trackId: Int
 }
+
 
