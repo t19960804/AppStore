@@ -10,13 +10,13 @@ import UIKit
 
 class AppDetailController: BaseListController {
     //SearchController / AppsController透過appID進入DetailController
-    //appID就是Controller之間的"依賴"
+    //DetailController"依賴"appID來做fetchData
     let appID: String
     var app: Result?
     var reviews: UserReviews?
     let dispatchGroup = DispatchGroup()
     
-    //依賴注入,強迫開發者要傳入appID
+    //依賴注入,強迫開發者要傳入appID,保證appID有值
     init(appID: String){
         self.appID = appID
         super.init()
