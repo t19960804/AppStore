@@ -10,6 +10,7 @@ import UIKit
 
 class TodayController: BaseListController {
     var startingFrame: CGRect?
+    var fullScreenController: UIViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,34 +29,43 @@ class TodayController: BaseListController {
         return cell
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let redView = UIView()
-        redView.backgroundColor = .red
-        redView.layer.cornerRadius = 16
-        redView.clipsToBounds = true
-        view.addSubview(redView)
+        let fullScreenController = AppFullScreenController(style: .grouped)
+        let fullScreenView = fullScreenController.view!
+        view.addSubview(fullScreenView)
+        //沒呼叫addChild,TableViewController有時不會正確顯示cell
+        addChild(fullScreenController)
+        self.fullScreenController = fullScreenController
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleRemoveRedView(gesture:)))
-        redView.addGestureRecognizer(tapGesture)
+        fullScreenView.addGestureRecognizer(tapGesture)
         guard let cell = collectionView.cellForItem(at: indexPath) else { return }
         //Converts a rectangle from the receiver’s coordinate system to that of another view
         //If view is nil, this method instead converts to window base coordinates
         //cell的frame只是以父View為基準,但這邊要的是跟整個螢幕相對的frame
         guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else { return }
         self.startingFrame = startingFrame
-        redView.frame = startingFrame
+        fullScreenView.frame = startingFrame
+        
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            redView.frame = self.view.frame
+            fullScreenView.frame = self.view.frame
+            //iOS13使用CGAffineTransform時動畫會有bug
+            self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height
         })
         
     }
     @objc fileprivate func handleRemoveRedView(gesture: UITapGestureRecognizer){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            //先回到原Frame
             guard let endingFrame = self.startingFrame else { return }
             gesture.view?.frame = endingFrame
+            if let tabBarFrame = self.tabBarController?.tabBar.frame {
+                self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height - tabBarFrame.height
+            }
         }) { _ in
-            //動畫結束後移除
-            //gesture.view > 被加入gesture的View
             gesture.view?.removeFromSuperview()
+            if let controller = self.fullScreenController {
+                //addChild後,記得remove掉
+                controller.removeFromParent()
+            }
         }
     }
 }
