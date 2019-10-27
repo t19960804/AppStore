@@ -10,7 +10,7 @@ import UIKit
 
 class TodayController: BaseListController {
     var startingFrame: CGRect?
-    var fullScreenController: UIViewController?
+    var fullScreenController: AppFullScreenController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,30 +31,32 @@ class TodayController: BaseListController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let fullScreenController = AppFullScreenController(style: .grouped)
         let fullScreenView = fullScreenController.view!
-        view.addSubview(fullScreenView)
-        //沒呼叫addChild,TableViewController有時不會正確顯示cell
-        addChild(fullScreenController)
         self.fullScreenController = fullScreenController
+        view.addSubview(fullScreenView)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleRemoveRedView(gesture:)))
         fullScreenView.addGestureRecognizer(tapGesture)
         guard let cell = collectionView.cellForItem(at: indexPath) else { return }
-        //Converts a rectangle from the receiver’s coordinate system to that of another view
-        //If view is nil, this method instead converts to window base coordinates
-        //cell的frame只是以父View為基準,但這邊要的是跟整個螢幕相對的frame
+        //cell的frame只是以父View為基準,但這邊要的是跟整個螢幕相對的frame,所以給nil
         guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else { return }
         self.startingFrame = startingFrame
         fullScreenView.frame = startingFrame
+        fullScreenController.closeHandler = {
+            self.handleRemoveRedView(gesture: tapGesture)
+        }
+        expandTheView(with: fullScreenView)
         
+    }
+    func expandTheView(with view: UIView){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            fullScreenView.frame = self.view.frame
+            view.frame = self.view.frame
             //iOS13使用CGAffineTransform時動畫會有bug
             self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height
         })
-        
     }
     @objc fileprivate func handleRemoveRedView(gesture: UITapGestureRecognizer){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
+            //self.fullScreenController?.tableView.contentOffset = .zero
             guard let endingFrame = self.startingFrame else { return }
             gesture.view?.frame = endingFrame
             if let tabBarFrame = self.tabBarController?.tabBar.frame {
@@ -68,6 +70,7 @@ class TodayController: BaseListController {
             }
         }
     }
+
 }
 extension TodayController: UICollectionViewDelegateFlowLayout {
     //想要cell有左右的inset,不一定要設定sectionInset,因為設定了左右的sectionInset,sizeForItemAt()也要跟著減掉sectionInset
