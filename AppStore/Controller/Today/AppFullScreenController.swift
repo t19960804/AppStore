@@ -10,17 +10,16 @@ import UIKit
 
 class AppFullScreenController: UITableViewController {
     var closeHandler: (() -> Void)?
+    var todayItem: TodayItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         view.layer.cornerRadius = 16
         tableView.separatorStyle = .none
+        tableView.allowsSelection = false
     }
-    @objc fileprivate func closeFullScreen(button: UIButton){
-        button.isHidden = true
-        closeHandler?()
-    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
@@ -30,8 +29,13 @@ class AppFullScreenController: UITableViewController {
     }
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = FullScreenCell()
+        view.todayCell.todayItem = self.todayItem
         view.closeButton.addTarget(self, action: #selector(closeFullScreen(button:)), for: .touchUpInside)
         return view
+    }
+    @objc fileprivate func closeFullScreen(button: UIButton){
+        button.isHidden = true
+        closeHandler?()
     }
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 450

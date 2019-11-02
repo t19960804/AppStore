@@ -11,21 +11,29 @@ import UIKit
 class TodayController: BaseListController {
     var startingFrame: CGRect?
     var fullScreenController: AppFullScreenController?
-    
+    var safeAreaTopPadding: CGFloat = 0.0
+    let todayItems = [
+        TodayItem(category: "LIFE HACK", title: "Utilizing your Time", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white),
+        TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "holiday") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 1, green: 0.9599583745, blue: 0.707649529, alpha: 1))]
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView.register(TodayCell.self, forCellWithReuseIdentifier: TodayCell.cellID)
         collectionView.contentInset = UIEdgeInsets(top: 32, left: 0, bottom: 32, right: 0)
+
     }
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
+        if let window = UIApplication.shared.keyWindow {
+            safeAreaTopPadding = window.safeAreaInsets.top
+        }
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return todayItems.count
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayCell.cellID, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayCell.cellID, for: indexPath) as! TodayCell
+        cell.todayItem = todayItems[indexPath.item]
         return cell
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -33,19 +41,18 @@ class TodayController: BaseListController {
         let fullScreenView = fullScreenController.view!
         self.fullScreenController = fullScreenController
         view.addSubview(fullScreenView)
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleRemoveRedView(gesture:)))
-        fullScreenView.addGestureRecognizer(tapGesture)
+
         guard let cell = collectionView.cellForItem(at: indexPath) else { return }
         //cell的frame只是以父View為基準,但這邊要的是跟整個螢幕相對的frame,所以給nil
         guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else { return }
         self.startingFrame = startingFrame
         fullScreenView.frame = startingFrame
-        fullScreenController.closeHandler = {
-            self.handleRemoveRedView(gesture: tapGesture)
-        }
+        fullScreenController.todayItem = todayItems[indexPath.item]
         expandTheView(with: fullScreenView)
         
+        fullScreenController.closeHandler = {
+            self.handleRemoveRedView(with: fullScreenView)
+        }
     }
     func expandTheView(with view: UIView){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
@@ -54,20 +61,17 @@ class TodayController: BaseListController {
             self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height
         })
     }
-    @objc fileprivate func handleRemoveRedView(gesture: UITapGestureRecognizer){
+
+    fileprivate func handleRemoveRedView(with view: UIView){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            //self.fullScreenController?.tableView.contentOffset = .zero
+            self.fullScreenController?.tableView.contentOffset.y =  -self.safeAreaTopPadding
             guard let endingFrame = self.startingFrame else { return }
-            gesture.view?.frame = endingFrame
+            view.frame = endingFrame
             if let tabBarFrame = self.tabBarController?.tabBar.frame {
                 self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height - tabBarFrame.height
             }
         }) { _ in
-            gesture.view?.removeFromSuperview()
-            if let controller = self.fullScreenController {
-                //addChild後,記得remove掉
-                controller.removeFromParent()
-            }
+            view.removeFromSuperview()
         }
     }
 
