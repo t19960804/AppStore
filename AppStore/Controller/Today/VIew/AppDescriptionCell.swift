@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AppFullScreenCell: UITableViewCell {
+class AppDescriptionCell: UITableViewCell {
     let descriptionLabel: UILabel = {
         let lb = UILabel()
         lb.translatesAutoresizingMaskIntoConstraints = false
@@ -18,7 +18,7 @@ class AppFullScreenCell: UITableViewCell {
         mutableString.append(NSAttributedString(string: "\n\n\nHeroic adventure", attributes: [.foregroundColor : UIColor.black]))
         mutableString.append(NSAttributedString(string: "\nBattle in dungeons. Collect treasure. Solve puzzles. Sail to new lands. Oceanhorn lets you do it all in a beautifully detailed world.", attributes: [.foregroundColor : UIColor.gray]))
         mutableString.append(NSAttributedString(string: "\n\n\nHeroic adventure", attributes: [.foregroundColor : UIColor.black]))
-        mutableString.append(NSAttributedString(string: "\nBattle in dungeons. Collect treasure. Solve puzzles. Sail to new lands. Oceanhorn lets you do it all in a beautifully detailed world.", attributes: [.foregroundColor : UIColor.gray]))
+        mutableString.append(NSAttributedString(string: "\nBattle in dungeons. Collect treasure. Solve puzzles. Sail to new lands. Oceanhorn lets you do it all in a beautifully detailed world.treasure. Solve puzzles. Sail to new lands. Oceanhorn lets you do it all in a beautifully detailed world.treasure. Solve puzzles. Sail to new lands. Oceanhorn lets you do it all in a beautifully detailed world.", attributes: [.foregroundColor : UIColor.gray]))
         lb.attributedText = mutableString
         lb.numberOfLines = 0
         lb.font = .systemFont(ofSize: 20)

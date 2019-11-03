@@ -16,9 +16,11 @@ class TodayCell: UICollectionViewCell {
             titleLabel.text = todayItem.title
             appImageView.image = todayItem.appImage
             descriptionLabel.text = todayItem.description
-            //backgroundColor = todayItem.backgroundColor
+            backgroundColor = todayItem.backgroundColor
         }
     }
+    var topAnchorOfVerticalStackView: NSLayoutConstraint?
+    
     let categoryLabel: UILabel = {
         let lb = UILabel()
         lb.font = UIFont.boldSystemFont(ofSize: 20)
@@ -59,6 +61,7 @@ class TodayCell: UICollectionViewCell {
         super.init(frame: frame)
         layer.cornerRadius = 16
         clipsToBounds = true
+        backgroundColor = .white
         setUpConstraints()
     }
     fileprivate func setUpConstraints(){
@@ -70,7 +73,8 @@ class TodayCell: UICollectionViewCell {
         appImageView.heightAnchor.constraint(equalToConstant: 240).isActive = true
         appImageView.widthAnchor.constraint(equalToConstant: 240).isActive = true
         
-        verticalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
+        topAnchorOfVerticalStackView = verticalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 20)
+        topAnchorOfVerticalStackView?.isActive = true
         verticalStackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
         verticalStackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -20).isActive = true
         verticalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true

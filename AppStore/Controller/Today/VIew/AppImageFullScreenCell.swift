@@ -9,7 +9,7 @@
 import UIKit
 
 
-class FullScreenCell: UITableViewCell {
+class AppImageFullScreenCell: UITableViewCell {
     let todayCell = TodayCell()
     let closeButton: UIButton = {
         let btn = UIButton(type: .system)
@@ -28,7 +28,8 @@ class FullScreenCell: UITableViewCell {
         
         todayCell.translatesAutoresizingMaskIntoConstraints = false
         todayCell.fillSuperView()
-        closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 12).isActive = true
+
+        closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 48).isActive = true
         closeButton.rightAnchor.constraint(equalTo: rightAnchor, constant: 12).isActive = true
         closeButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
         closeButton.heightAnchor.constraint(equalToConstant: 38).isActive = true

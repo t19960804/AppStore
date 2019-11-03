@@ -9,8 +9,10 @@
 import UIKit
 
 class AppFullScreenController: UITableViewController {
-    var closeHandler: (() -> Void)?
+    var expandHandler: ((AppImageFullScreenCell) -> Void)?
+    var closeHandler: ((AppImageFullScreenCell) -> Void)?
     var todayItem: TodayItem?
+    var imageCell: AppImageFullScreenCell!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,24 +20,27 @@ class AppFullScreenController: UITableViewController {
         view.layer.cornerRadius = 16
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
+        //不要添加safe area的contentInset到tableView
+        tableView.contentInsetAdjustmentBehavior = .never
     }
-
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = AppFullScreenCell()
+        let cell = AppDescriptionCell()
         return cell
     }
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = FullScreenCell()
-        view.todayCell.todayItem = self.todayItem
-        view.closeButton.addTarget(self, action: #selector(closeFullScreen(button:)), for: .touchUpInside)
-        return view
+        imageCell = AppImageFullScreenCell()
+        imageCell.todayCell.todayItem = self.todayItem
+        imageCell.closeButton.addTarget(self, action: #selector(closeFullScreen(button:)), for: .touchUpInside)
+        imageCell.todayCell.layer.cornerRadius = 0
+        expandHandler?(imageCell)
+        return imageCell
     }
     @objc fileprivate func closeFullScreen(button: UIButton){
         button.isHidden = true
-        closeHandler?()
+        closeHandler?(imageCell)
     }
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 450

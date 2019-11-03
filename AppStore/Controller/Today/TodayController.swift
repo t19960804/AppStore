@@ -14,13 +14,12 @@ class TodayController: BaseListController {
     var safeAreaTopPadding: CGFloat = 0.0
     let todayItems = [
         TodayItem(category: "LIFE HACK", title: "Utilizing your Time", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white),
-        TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "holiday") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 1, green: 0.9599583745, blue: 0.707649529, alpha: 1))]
+        TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "Korea") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))]
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView.register(TodayCell.self, forCellWithReuseIdentifier: TodayCell.cellID)
         collectionView.contentInset = UIEdgeInsets(top: 32, left: 0, bottom: 32, right: 0)
-
     }
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
@@ -50,28 +49,38 @@ class TodayController: BaseListController {
         fullScreenController.todayItem = todayItems[indexPath.item]
         expandTheView(with: fullScreenView)
         
-        fullScreenController.closeHandler = {
-            self.handleRemoveRedView(with: fullScreenView)
+        fullScreenController.closeHandler = { cell in
+            self.shrinkTheView(with: fullScreenView, and: cell)
         }
     }
-    func expandTheView(with view: UIView){
+    fileprivate func expandTheView(with view: UIView){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             view.frame = self.view.frame
-            //iOS13使用CGAffineTransform時動畫會有bug
             self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height
+            self.fullScreenController?.expandHandler = { cell in
+                cell.todayCell.topAnchorOfVerticalStackView?.constant = 48
+                cell.layoutIfNeeded()
+            }
         })
     }
 
-    fileprivate func handleRemoveRedView(with view: UIView){
+    fileprivate func shrinkTheView(with view: UIView, and cell: AppImageFullScreenCell){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            self.fullScreenController?.tableView.contentOffset.y =  -self.safeAreaTopPadding
+            self.fullScreenController?.tableView.contentOffset.y = 0
+
             guard let endingFrame = self.startingFrame else { return }
             view.frame = endingFrame
             if let tabBarFrame = self.tabBarController?.tabBar.frame {
                 self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height - tabBarFrame.height
             }
+            //調整constraint後記得刷新layout
+            cell.todayCell.topAnchorOfVerticalStackView?.constant = 20
+            cell.layoutIfNeeded()
+            self.collectionView.isUserInteractionEnabled = false
+
         }) { _ in
             view.removeFromSuperview()
+            self.collectionView.isUserInteractionEnabled = true
         }
     }
 
