@@ -43,7 +43,7 @@ class AppFullScreenController: UITableViewController {
         closeHandler?(imageCell)
     }
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 450
+        return TodayController.cellHeight
     }
 
 }

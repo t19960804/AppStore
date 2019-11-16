@@ -14,4 +14,9 @@ struct TodayItem {
     let appImage: UIImage
     let description: String
     let backgroundColor: UIColor
+    let type: CellType
+}
+//當raw value為String，那麼每一個case的"隱式"raw value則是那個case的名稱
+enum CellType: String {
+    case Single, Multiple
 }

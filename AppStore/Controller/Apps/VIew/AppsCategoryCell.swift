@@ -11,11 +11,11 @@ import SDWebImage
 
 class AppsCategoryCell: UICollectionViewCell {
     static let id = "Cell"
-    var feedResult: FeedResult? {
+    var feedResult: FeedResult! {
         didSet {
-            appImageView.sd_setImage(with: URL(string: feedResult!.artworkUrl100))
-            nameLabel.text = feedResult!.name
-            companyNameLabel.text = feedResult!.artistName
+            appImageView.sd_setImage(with: URL(string: feedResult.artworkUrl100))
+            nameLabel.text = feedResult.name
+            companyNameLabel.text = feedResult.artistName
         }
     }
     

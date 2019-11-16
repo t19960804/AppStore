@@ -9,29 +9,31 @@
 import UIKit
 
 class TodayController: BaseListController {
+    static let cellHeight: CGFloat = 500
+    
     var startingFrame: CGRect?
     var fullScreenController: AppFullScreenController?
-    var safeAreaTopPadding: CGFloat = 0.0
     let todayItems = [
-        TodayItem(category: "LIFE HACK", title: "Utilizing your Time", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white),
-        TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "Korea") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1))]
+        TodayItem(category: "THE DAILY LIST", title: "Test-Drive These CarPlay Apps", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white, type: .Multiple),
+        TodayItem(category: "LIFE HACK", title: "Utilizing your Time", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white, type: .Single),
+        TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "holiday") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 0.9862492681, green: 0.9633030295, blue: 0.727068305, alpha: 1), type: .Single)]
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        collectionView.register(TodayCell.self, forCellWithReuseIdentifier: TodayCell.cellID)
         collectionView.contentInset = UIEdgeInsets(top: 32, left: 0, bottom: 32, right: 0)
+        collectionView.register(TodayCell.self, forCellWithReuseIdentifier: CellType.Single.rawValue)
+        collectionView.register(MultipleAppCell.self, forCellWithReuseIdentifier: CellType.Multiple.rawValue)
+
     }
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
-        if let window = UIApplication.shared.keyWindow {
-            safeAreaTopPadding = window.safeAreaInsets.top
-        }
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return todayItems.count
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayCell.cellID, for: indexPath) as! TodayCell
+        let cellType = todayItems[indexPath.item].type
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.rawValue, for: indexPath) as! BaseTodayCell
         cell.todayItem = todayItems[indexPath.item]
         return cell
     }
@@ -88,7 +90,7 @@ class TodayController: BaseListController {
 extension TodayController: UICollectionViewDelegateFlowLayout {
     //想要cell有左右的inset,不一定要設定sectionInset,因為設定了左右的sectionInset,sizeForItemAt()也要跟著減掉sectionInset
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 64, height: 450)
+        return CGSize(width: view.frame.width - 64, height: TodayController.cellHeight)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 32
