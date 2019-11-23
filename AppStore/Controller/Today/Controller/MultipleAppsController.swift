@@ -10,30 +10,52 @@ import UIKit
 
 class MultipleAppsController: BaseListController {
     var apps = [FeedResult]()
-    var itemSpacing: CGFloat = 16
+    fileprivate var itemSpacing: CGFloat = 16
+    fileprivate var insetPadding: CGFloat = 16
     
+    let dismissButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.setImage(UIImage(named: "close_button"), for: .normal)
+        //當Button Type為System，圖片的顏色將由 Tint 決定
+        btn.tintColor = .lightGray
+        btn.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
+        return btn
+    }()
+    var mode: Mode = .small
+    //MARK: - init
+    init(mode: Mode){
+        self.mode = mode
+        super.init()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
-        collectionView.isScrollEnabled = false
-
-        collectionView.register(AppsCategoryCell.self, forCellWithReuseIdentifier: AppsCategoryCell.id)
-        fetchData()
-    }
-    func fetchData(){
-        NetworkService.shared.fetchEditorsChoiceGames { (appsFeed, error) in
-            if let error = error {
-                print("Fetch TopGrossingApps Fail:\(error)")
-                return
-            }
-            self.apps = appsFeed?.feed.results ?? []
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
+        if mode == .fullScreen {
+            setUpConstraints()
         }
+        collectionView.contentInset = mode == .fullScreen ? UIEdgeInsets(top: 0, left: insetPadding, bottom: 0, right: insetPadding) : UIEdgeInsets.zero
+        collectionView.isScrollEnabled = mode == .fullScreen
+        collectionView.register(AppsCategoryCell.self, forCellWithReuseIdentifier: AppsCategoryCell.id)
+        
+    }
+    fileprivate func setUpConstraints(){
+        view.addSubview(dismissButton)
+        dismissButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
+        dismissButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
+        dismissButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        dismissButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+    }
+    @objc func handleDismiss(){
+        dismiss(animated: true)
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return min(apps.count, 4)
+        return mode == .fullScreen ? apps.count : min(apps.count, 4)
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppsCategoryCell.id, for: indexPath) as! AppsCategoryCell
@@ -44,10 +66,16 @@ class MultipleAppsController: BaseListController {
         return cell
 
     }
-    
+    enum Mode {
+        case small, fullScreen
+    }
 }
 extension MultipleAppsController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if mode == .fullScreen {
+            let height: CGFloat = 68
+            return CGSize(width: view.frame.width - (insetPadding * 2), height: height)
+        }
         let height = (view.frame.height - 3 * itemSpacing) / 4
         return CGSize(width: view.frame.width, height: height)
     }

@@ -9,8 +9,8 @@
 import UIKit
 
 class AppsCategoryController: HorizontalSnappingController {
-    let interItemSpacing: CGFloat = 6
-    let padding: CGFloat = 12
+    fileprivate let interItemSpacing: CGFloat = 6
+    fileprivate let padding: CGFloat = 12
     
     var feedResults: [FeedResult]?
     var itemSelectedHandler: ((FeedResult) -> Void)?

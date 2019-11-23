@@ -12,7 +12,7 @@ class AppsSearchController: BaseListController {
     var results = [Result]()
     //參數searchResultsController,表示要秀出搜尋結果的Controller
     //但如果是在同一個Controller內則可傳nil
-    let searchController = UISearchController(searchResultsController: nil)
+    fileprivate let searchController = UISearchController(searchResultsController: nil)
     var timer: Timer?
     
     let emptyResultLabel: UILabel = {

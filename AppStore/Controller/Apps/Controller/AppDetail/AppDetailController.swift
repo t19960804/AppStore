@@ -14,7 +14,7 @@ class AppDetailController: BaseListController {
     let appID: String
     var app: Result?
     var reviews: UserReviews?
-    let dispatchGroup = DispatchGroup()
+    fileprivate let dispatchGroup = DispatchGroup()
     
     //依賴注入,強迫開發者要傳入appID,保證appID有值
     init(appID: String){
@@ -113,11 +113,11 @@ extension AppDetailController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 30
     }
-    
+    //CaseIterable > 將enum當成array使用
+    enum SortOfCell: CaseIterable {
+        case Detail
+        case Preview
+        case UserReview
+    }
 }
-//CaseIterable > 將enum當成array使用
-enum SortOfCell: CaseIterable {
-    case Detail
-    case Preview
-    case UserReview
-}
+

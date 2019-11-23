@@ -14,6 +14,9 @@ class MultipleAppCell: BaseTodayCell {
             categoryLabel.text = todayItem.category
             titleLabel.text = todayItem.title
             backgroundColor = todayItem.backgroundColor
+            
+            multipleAppsController.apps = todayItem.multipleAppsResults
+            multipleAppsController.collectionView.reloadData()
         }
     }
     let categoryLabel: UILabel = {
@@ -27,7 +30,8 @@ class MultipleAppCell: BaseTodayCell {
         lb.numberOfLines = 2
         return lb
     }()
-    let multipleAppsController = MultipleAppsController()
+    //視為View層,不要在裡面做fetchData
+    let multipleAppsController = MultipleAppsController(mode: .small)
     lazy var verticalStackView: UIStackView = {
        let sv = UIStackView(arrangedSubviews: [categoryLabel,
                                                titleLabel,
@@ -47,7 +51,7 @@ class MultipleAppCell: BaseTodayCell {
         verticalStackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 24).isActive = true
         verticalStackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -24).isActive = true
         verticalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24).isActive = true
-
+        
     }
     
     required init?(coder: NSCoder) {

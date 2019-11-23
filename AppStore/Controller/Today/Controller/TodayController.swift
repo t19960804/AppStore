@@ -13,17 +13,63 @@ class TodayController: BaseListController {
     
     var startingFrame: CGRect?
     var fullScreenController: AppFullScreenController?
-    let todayItems = [
-        TodayItem(category: "THE DAILY LIST", title: "Test-Drive These CarPlay Apps", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white, type: .Multiple),
-        TodayItem(category: "LIFE HACK", title: "Utilizing your Time", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white, type: .Single),
-        TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "holiday") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 0.9862492681, green: 0.9633030295, blue: 0.727068305, alpha: 1), type: .Single)]
+    var todayItems = [TodayItem]()
+    let activityIndicator: UIActivityIndicatorView = {
+        let ai = UIActivityIndicatorView(style: .whiteLarge)
+        ai.translatesAutoresizingMaskIntoConstraints = false
+        ai.color = .darkGray
+        ai.startAnimating()
+        ai.hidesWhenStopped = true
+        return ai
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView.contentInset = UIEdgeInsets(top: 32, left: 0, bottom: 32, right: 0)
         collectionView.register(TodayCell.self, forCellWithReuseIdentifier: CellType.Single.rawValue)
         collectionView.register(MultipleAppCell.self, forCellWithReuseIdentifier: CellType.Multiple.rawValue)
+        setUpConstraints()
+        fetchTodayData()
+    }
+    fileprivate func setUpConstraints(){
+        view.addSubview(activityIndicator)
+        activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+    fileprivate func fetchTodayData(){
+        let dispatchGroup = DispatchGroup()
+        var editorsChoiceGamesFeed: AppsFeed?
+        var topGrossingAppsFeed: AppsFeed?
 
+        dispatchGroup.enter()
+        NetworkService.shared.fetchEditorsChoiceGames { (appsFeed, error) in
+            if let error = error {
+                print("Fetch EditorsChoiceGames fail:\(error)")
+            }
+            editorsChoiceGamesFeed = appsFeed
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        NetworkService.shared.fetchTopGrossingApps { (appsFeed, error) in
+            if let error = error {
+                print("Fetch TopGrossingApps fail:\(error)")
+            }
+            topGrossingAppsFeed = appsFeed
+            dispatchGroup.leave()
+        }
+        dispatchGroup.notify(queue: .main) {
+            self.activityIndicator.stopAnimating()
+            self.todayItems = [
+                TodayItem(category: "THE DAILY LIST", title: editorsChoiceGamesFeed?.feed.title ?? "Unknow"
+                    , appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white, type: .Multiple, multipleAppsResults: editorsChoiceGamesFeed?.feed.results ?? []),
+                TodayItem(category: "THE DAILY LIST", title: topGrossingAppsFeed?.feed.title
+                    ?? "Unknow", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white, type: .Multiple, multipleAppsResults: topGrossingAppsFeed?.feed.results ?? []),
+                TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "holiday") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 0.9862492681, green: 0.9633030295, blue: 0.727068305, alpha: 1), type: .Single, multipleAppsResults: [])
+            ]
+            self.collectionView.reloadData()
+            print("Fetch all today data completely")
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
@@ -38,6 +84,12 @@ class TodayController: BaseListController {
         return cell
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if todayItems[indexPath.item].type == .Multiple {
+            let listContoller = MultipleAppsController(mode: .fullScreen)
+            listContoller.apps = todayItems[indexPath.item].multipleAppsResults
+            present(listContoller, animated: true)
+            return
+        }
         let fullScreenController = AppFullScreenController(style: .grouped)
         let fullScreenView = fullScreenController.view!
         self.fullScreenController = fullScreenController
