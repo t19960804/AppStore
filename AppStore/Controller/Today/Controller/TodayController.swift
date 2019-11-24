@@ -87,6 +87,7 @@ class TodayController: BaseListController {
         if todayItems[indexPath.item].type == .Multiple {
             let listContoller = MultipleAppsController(mode: .fullScreen)
             listContoller.apps = todayItems[indexPath.item].multipleAppsResults
+            listContoller.todayItem = todayItems[indexPath.item]
             present(listContoller, animated: true)
             return
         }

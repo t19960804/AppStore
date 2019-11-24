@@ -11,7 +11,10 @@ import UIKit
 class MultipleAppsController: BaseListController {
     var apps = [FeedResult]()
     fileprivate var itemSpacing: CGFloat = 16
-    fileprivate var insetPadding: CGFloat = 16
+    fileprivate var insetPadding: CGFloat = 24
+    var todayItem: TodayItem!
+    var mode: Mode = .small
+    
     
     let dismissButton: UIButton = {
         let btn = UIButton(type: .system)
@@ -22,7 +25,7 @@ class MultipleAppsController: BaseListController {
         btn.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
         return btn
     }()
-    var mode: Mode = .small
+    
     //MARK: - init
     init(mode: Mode){
         self.mode = mode
@@ -39,11 +42,20 @@ class MultipleAppsController: BaseListController {
         if mode == .fullScreen {
             setUpConstraints()
         }
-        collectionView.contentInset = mode == .fullScreen ? UIEdgeInsets(top: 0, left: insetPadding, bottom: 0, right: insetPadding) : UIEdgeInsets.zero
+        //inset也會影響到Header
+        collectionView.contentInset = mode == .fullScreen ? UIEdgeInsets(top: 30, left: insetPadding, bottom: 12, right: insetPadding) : UIEdgeInsets.zero
         collectionView.isScrollEnabled = mode == .fullScreen
         collectionView.register(AppsCategoryCell.self, forCellWithReuseIdentifier: AppsCategoryCell.id)
+        collectionView.register(MultipleAppsHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MultipleAppsHeader.headerID)
         
     }
+    override func viewDidLayoutSubviews() {
+        if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? MultipleAppsHeader {
+            header.categoryLabel.text = todayItem.category
+            header.titleLabel.text = todayItem.title
+        }
+    }
+    
     fileprivate func setUpConstraints(){
         view.addSubview(dismissButton)
         dismissButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
@@ -66,6 +78,11 @@ class MultipleAppsController: BaseListController {
         return cell
 
     }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let id = apps[indexPath.item].id
+        let appDetailController = AppDetailController(appID: id)
+        present(appDetailController, animated: true)
+    }
     enum Mode {
         case small, fullScreen
     }
@@ -82,4 +99,26 @@ extension MultipleAppsController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return itemSpacing
     }
+    //MARK: - Header
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if mode == .fullScreen {
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: MultipleAppsHeader.headerID, for: indexPath)
+            return header
+        }
+        return UICollectionReusableView()
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        if mode == .fullScreen {
+            return CGSize(width: view.frame.width, height: 120)
+        }
+        return CGSize(width: 0, height: 0)
+    }
+    //調整collectionView跟Header的距離
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if mode == .fullScreen {
+            return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
+        }
+        return .zero
+    }
 }
+
