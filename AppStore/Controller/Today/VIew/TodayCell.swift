@@ -16,6 +16,7 @@ class TodayCell: BaseTodayCell {
             appImageView.image = todayItem.appImage
             descriptionLabel.text = todayItem.description
             backgroundColor = todayItem.backgroundColor
+            backgroundView?.backgroundColor = todayItem.backgroundColor
         }
     }
     var topAnchorOfVerticalStackView: NSLayoutConstraint?
@@ -34,6 +35,7 @@ class TodayCell: BaseTodayCell {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.contentMode = .scaleAspectFill
+        iv.clipsToBounds = true
         return iv
     }()
     let containerView: UIView = {
@@ -58,9 +60,6 @@ class TodayCell: BaseTodayCell {
     }()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        layer.cornerRadius = 16
-        clipsToBounds = true
-        backgroundColor = .white
         setUpConstraints()
     }
     fileprivate func setUpConstraints(){

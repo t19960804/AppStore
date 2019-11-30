@@ -43,9 +43,6 @@ class MultipleAppCell: BaseTodayCell {
     }()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .blue
-        layer.cornerRadius = 16
-        clipsToBounds = true
         addSubview(verticalStackView)
         verticalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 24).isActive = true
         verticalStackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 24).isActive = true

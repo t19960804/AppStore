@@ -35,6 +35,7 @@ class AppFullScreenController: UITableViewController {
         imageCell.todayCell.todayItem = self.todayItem
         imageCell.closeButton.addTarget(self, action: #selector(closeFullScreen(button:)), for: .touchUpInside)
         imageCell.todayCell.layer.cornerRadius = 0
+        imageCell.clipsToBounds = true
         expandHandler?(imageCell)
         return imageCell
     }

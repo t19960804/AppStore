@@ -65,7 +65,8 @@ class TodayController: BaseListController {
                     , appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white, type: .Multiple, multipleAppsResults: editorsChoiceGamesFeed?.feed.results ?? []),
                 TodayItem(category: "THE DAILY LIST", title: topGrossingAppsFeed?.feed.title
                     ?? "Unknow", appImage: UIImage(named: "garden") ?? UIImage(), description: "All the tools and apps you need to intelligently organize your life the right way", backgroundColor: .white, type: .Multiple, multipleAppsResults: topGrossingAppsFeed?.feed.results ?? []),
-                TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "holiday") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 0.9862492681, green: 0.9633030295, blue: 0.727068305, alpha: 1), type: .Single, multipleAppsResults: [])
+                TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "holiday") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 0.9862492681, green: 0.9633030295, blue: 0.727068305, alpha: 1), type: .Single, multipleAppsResults: []),
+                TodayItem(category: "HOLIDAYS", title: "Travel on a Budget", appImage: UIImage(named: "garden") ?? UIImage(), description: "Find out all you need to know on how to travel without packing eveything! ", backgroundColor: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), type: .Single, multipleAppsResults: [])
             ]
             self.collectionView.reloadData()
             print("Fetch all today data completely")
