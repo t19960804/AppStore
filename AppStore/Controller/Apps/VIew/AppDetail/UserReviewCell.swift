@@ -10,6 +10,13 @@ import UIKit
 
 class UserReviewCell: UICollectionViewCell {
     static let cellID = "UserReviewCell"
+    var review: ReviewEntry! {
+        didSet {
+            authorLabel.text = review.author.name.label
+            titleLabel.text = review.title.label
+            contentLabel.text = review.content.label
+        }
+    }
     let titleLabel: UILabel = {
         let lb = UILabel()
         lb.font = .boldSystemFont(ofSize: 18)

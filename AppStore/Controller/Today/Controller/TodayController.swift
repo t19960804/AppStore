@@ -85,38 +85,46 @@ class TodayController: BaseListController {
         return cell
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if todayItems[indexPath.item].type == .Multiple {
-            let listContoller = MultipleAppsController(mode: .fullScreen)
-            listContoller.apps = todayItems[indexPath.item].multipleAppsResults
-            listContoller.todayItem = todayItems[indexPath.item]
-            present(listContoller, animated: true)
-            return
+        switch todayItems[indexPath.item].type {
+        case .Multiple:
+            showAppsListController(indexPath: indexPath)
+        default:
+            showAppFullScreenController(indexPath: indexPath)
         }
+    }
+    fileprivate func showAppsListController(indexPath: IndexPath){
+        let listContoller = MultipleAppsController(mode: .fullScreen)
+        listContoller.apps = todayItems[indexPath.item].multipleAppsResults
+        listContoller.todayItem = todayItems[indexPath.item]
+        present(listContoller, animated: true)
+    }
+    fileprivate func showAppFullScreenController(indexPath: IndexPath){
+        //Step 1 : Set up FullScreenController
         let fullScreenController = AppFullScreenController(style: .grouped)
         let fullScreenView = fullScreenController.view!
         self.fullScreenController = fullScreenController
+        fullScreenController.closeHandler = { cell in
+            self.shrinkTheView(with: fullScreenView, and: cell)
+        }
+        fullScreenController.expandHandler = { cell in
+            cell.todayCell.topAnchorOfVerticalStackView?.constant = 48
+            cell.layoutIfNeeded()
+        }
         view.addSubview(fullScreenView)
-
+        //Step 2 : Set up origin frame of FullScreenController
         guard let cell = collectionView.cellForItem(at: indexPath) else { return }
         //cell的frame只是以父View為基準,但這邊要的是跟整個螢幕相對的frame,所以給nil
         guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else { return }
         self.startingFrame = startingFrame
         fullScreenView.frame = startingFrame
         fullScreenController.todayItem = todayItems[indexPath.item]
+        //Step 3 : Expand Animation
         expandTheView(with: fullScreenView)
-        
-        fullScreenController.closeHandler = { cell in
-            self.shrinkTheView(with: fullScreenView, and: cell)
-        }
     }
     fileprivate func expandTheView(with view: UIView){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             view.frame = self.view.frame
             self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height
-            self.fullScreenController?.expandHandler = { cell in
-                cell.todayCell.topAnchorOfVerticalStackView?.constant = 48
-                cell.layoutIfNeeded()
-            }
         })
     }
 

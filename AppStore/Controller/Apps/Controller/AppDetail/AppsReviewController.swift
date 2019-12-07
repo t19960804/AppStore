@@ -12,9 +12,6 @@ class AppsReviewController: HorizontalSnappingController {
     
     var reviews: UserReviews? {
         didSet {
-//            reviews!.feed.entry.forEach { (entry) in
-//                print(entry.rate.label)
-//            }
             collectionView.reloadData()
         }
     }
@@ -31,9 +28,7 @@ class AppsReviewController: HorizontalSnappingController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserReviewCell.cellID, for: indexPath) as! UserReviewCell
         if let review = reviews?.feed.entry[indexPath.item] {
-            cell.authorLabel.text = review.author.name.label
-            cell.titleLabel.text = review.title.label
-            cell.contentLabel.text = review.content.label
+            cell.review = review
             let stars = cell.starsStackView.arrangedSubviews
             for i in stars.indices {
                 let isNeedToBeHidden = i >= Int(review.rate.label)!
