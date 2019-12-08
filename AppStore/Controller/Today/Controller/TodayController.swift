@@ -22,6 +22,12 @@ class TodayController: BaseListController {
         ai.hidesWhenStopped = true
         return ai
     }()
+    let blurView: UIVisualEffectView = {
+        let v = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.alpha = 0
+        return v
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = UIColor(white: 0.95, alpha: 1)
@@ -33,8 +39,11 @@ class TodayController: BaseListController {
     }
     fileprivate func setUpConstraints(){
         view.addSubview(activityIndicator)
+        view.addSubview(blurView)
+        
         activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        blurView.fillSuperView()
     }
     fileprivate func fetchTodayData(){
         let dispatchGroup = DispatchGroup()
@@ -123,6 +132,7 @@ class TodayController: BaseListController {
     }
     fileprivate func expandTheView(with view: UIView){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
+            self.blurView.alpha = 1
             view.frame = self.view.frame
             self.tabBarController?.tabBar.frame.origin.y = self.view.frame.height
         })
@@ -130,8 +140,9 @@ class TodayController: BaseListController {
 
     fileprivate func shrinkTheView(with view: UIView, and cell: AppImageFullScreenCell){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
+            self.blurView.alpha = 0
             self.fullScreenController?.tableView.contentOffset.y = 0
-
+            self.fullScreenController?.view.transform = .identity
             guard let endingFrame = self.startingFrame else { return }
             view.frame = endingFrame
             if let tabBarFrame = self.tabBarController?.tabBar.frame {
@@ -143,6 +154,7 @@ class TodayController: BaseListController {
             self.collectionView.isUserInteractionEnabled = false
 
         }) { _ in
+            //Animation Complete
             view.removeFromSuperview()
             self.collectionView.isUserInteractionEnabled = true
         }

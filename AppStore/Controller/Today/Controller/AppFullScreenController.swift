@@ -22,6 +22,27 @@ class AppFullScreenController: UITableViewController {
         tableView.allowsSelection = false
         //不要添加safe area的contentInset到tableView
         tableView.contentInsetAdjustmentBehavior = .never
+        //Pan Dismission
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanDismission))
+        view.addGestureRecognizer(gesture)
+        gesture.delegate = self
+    }
+    @objc fileprivate func closeFullScreen(button: UIButton){
+        button.isHidden = true
+        closeHandler?(imageCell)
+    }
+    @objc fileprivate func handlePanDismission(gesture: UIPanGestureRecognizer){
+        switch gesture.state {
+        case .changed://A change to a continuous gesture
+            //手指移動的偏移量(初值為0),往下偏移量為正,往上為負
+            let translationY = gesture.translation(in: view).y
+            let scaleRatio = min(1 - (translationY / 1000), 1)
+            view.transform = CGAffineTransform(scaleX: scaleRatio, y: scaleRatio)
+        case .ended://The end of a continuous gesture
+            closeHandler?(imageCell)
+        default:
+            print("The state of pan gesture not be handled now")
+        }
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
@@ -39,12 +60,15 @@ class AppFullScreenController: UITableViewController {
         expandHandler?(imageCell)
         return imageCell
     }
-    @objc fileprivate func closeFullScreen(button: UIButton){
-        button.isHidden = true
-        closeHandler?(imageCell)
-    }
+    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return TodayController.cellHeight
     }
 
+}
+extension AppFullScreenController: UIGestureRecognizerDelegate {
+    //為了同時識別Pangesture手勢 + 原本scrolling的手勢
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
 }
