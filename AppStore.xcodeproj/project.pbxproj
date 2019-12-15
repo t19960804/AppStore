@@ -18,6 +18,7 @@
 		0B144536235C29E50095D8B8 /* AppDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B144535235C29E50095D8B8 /* AppDescriptionCell.swift */; };
 		0B24C8DD2350371C00CFFB6C /* TodayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B24C8DC2350371C00CFFB6C /* TodayController.swift */; };
 		0B24C8DF235037E700CFFB6C /* TodayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B24C8DE235037E700CFFB6C /* TodayCell.swift */; };
+		0B42D13023A475C300BF2D65 /* TestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B42D12F23A475C300BF2D65 /* TestController.swift */; };
 		0B532566237FC60C00FFC7E5 /* MultipleAppsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B532565237FC60C00FFC7E5 /* MultipleAppsController.swift */; };
 		0B7DB04D22EC403200BD49B5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B7DB04C22EC403200BD49B5 /* AppDelegate.swift */; };
 		0B7DB05222EC403200BD49B5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B7DB05022EC403200BD49B5 /* Main.storyboard */; };
@@ -65,6 +66,7 @@
 		0B144535235C29E50095D8B8 /* AppDescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDescriptionCell.swift; sourceTree = "<group>"; };
 		0B24C8DC2350371C00CFFB6C /* TodayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayController.swift; sourceTree = "<group>"; };
 		0B24C8DE235037E700CFFB6C /* TodayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayCell.swift; sourceTree = "<group>"; };
+		0B42D12F23A475C300BF2D65 /* TestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestController.swift; sourceTree = "<group>"; };
 		0B532565237FC60C00FFC7E5 /* MultipleAppsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleAppsController.swift; sourceTree = "<group>"; };
 		0B7DB04922EC403200BD49B5 /* AppStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B7DB04C22EC403200BD49B5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				0B24C8DB235036F000CFFB6C /* Today */,
 				0BF2D7DA2307A97200874DF1 /* BaseListController.swift */,
 				0BF2D7F9232C947500874DF1 /* HorizontalSnappingController.swift */,
+				0B42D12F23A475C300BF2D65 /* TestController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -479,6 +482,7 @@
 				0B10C56922F684010075E6A9 /* SearchResult.swift in Sources */,
 				0B24C8DF235037E700CFFB6C /* TodayCell.swift in Sources */,
 				0B844E7D238A447F00696313 /* MultipleAppsHeader.swift in Sources */,
+				0B42D13023A475C300BF2D65 /* TestController.swift in Sources */,
 				0BF2D7D92307A92A00874DF1 /* AppsPageController.swift in Sources */,
 				0BB0D50D234065F900F64725 /* UserReviewCell.swift in Sources */,
 				0B7DB04D22EC403200BD49B5 /* AppDelegate.swift in Sources */,

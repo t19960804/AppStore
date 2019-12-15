@@ -13,6 +13,7 @@ class AppFullScreenController: UITableViewController {
     var closeHandler: ((AppImageFullScreenCell) -> Void)?
     var todayItem: TodayItem?
     var imageCell: AppImageFullScreenCell!
+    var beginOffset: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,6 @@ class AppFullScreenController: UITableViewController {
         tableView.allowsSelection = false
         //不要添加safe area的contentInset到tableView
         tableView.contentInsetAdjustmentBehavior = .never
-        //Pan Dismission
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanDismission))
         view.addGestureRecognizer(gesture)
         gesture.delegate = self
@@ -32,14 +32,27 @@ class AppFullScreenController: UITableViewController {
         closeHandler?(imageCell)
     }
     @objc fileprivate func handlePanDismission(gesture: UIPanGestureRecognizer){
+        if gesture.state == .began {
+            //若從最底部往上滑,translationY會超級大,造成做transform的倍數會急速變小,造成彈跳
+            //所以這邊要再扣掉一開始的contentOffset.y
+            beginOffset = tableView.contentOffset.y
+        }
+        if tableView.contentOffset.y > 0 {
+            return
+        }
+        //手指移動的偏移量(初值為0),往下為正,往上為負
+        let translationY = gesture.translation(in: view).y
         switch gesture.state {
-        case .changed://A change to a continuous gesture
-            //手指移動的偏移量(初值為0),往下偏移量為正,往上為負
-            let translationY = gesture.translation(in: view).y
-            let scaleRatio = min(1 - (translationY / 1000), 1)
+        case .changed:
+            let trueOffset = translationY - beginOffset
+            var scaleRatio = 1 - (trueOffset / 1000)
+            scaleRatio = min(scaleRatio, 1)//避免放大太多
+            scaleRatio = max(scaleRatio, 0.7)//避免縮小太多
             view.transform = CGAffineTransform(scaleX: scaleRatio, y: scaleRatio)
-        case .ended://The end of a continuous gesture
-            closeHandler?(imageCell)
+        case .ended:
+            if translationY > 0 {
+                closeHandler?(imageCell)
+            }
         default:
             print("The state of pan gesture not be handled now")
         }
@@ -63,6 +76,12 @@ class AppFullScreenController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return TodayController.cellHeight
+    }
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            scrollView.isScrollEnabled = false
+            scrollView.isScrollEnabled = true
+        }
     }
 
 }

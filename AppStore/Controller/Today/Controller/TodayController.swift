@@ -150,6 +150,7 @@ class TodayController: BaseListController {
             }
             //調整constraint後記得刷新layout
             cell.todayCell.topAnchorOfVerticalStackView?.constant = 20
+            cell.closeButton.alpha = 0
             cell.layoutIfNeeded()
             self.collectionView.isUserInteractionEnabled = false
 
