@@ -109,7 +109,7 @@ class TodayController: BaseListController {
     }
     fileprivate func showAppFullScreenController(indexPath: IndexPath){
         //Step 1 : Set up FullScreenController
-        let fullScreenController = AppFullScreenController(style: .grouped)
+        let fullScreenController = AppFullScreenController()
         let fullScreenView = fullScreenController.view!
         self.fullScreenController = fullScreenController
         fullScreenController.closeHandler = { cell in
@@ -141,7 +141,7 @@ class TodayController: BaseListController {
     fileprivate func shrinkTheView(with view: UIView, and cell: AppImageFullScreenCell){
         UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             self.blurView.alpha = 0
-            self.fullScreenController?.tableView.contentOffset.y = 0
+            self.fullScreenController?.fullScreenTableView.contentOffset.y = 0
             self.fullScreenController?.view.transform = .identity
             guard let endingFrame = self.startingFrame else { return }
             view.frame = endingFrame
@@ -150,7 +150,7 @@ class TodayController: BaseListController {
             }
             //調整constraint後記得刷新layout
             cell.todayCell.topAnchorOfVerticalStackView?.constant = 20
-            cell.closeButton.alpha = 0
+            self.fullScreenController?.closeButton.alpha = 0
             cell.layoutIfNeeded()
             self.collectionView.isUserInteractionEnabled = false
 
