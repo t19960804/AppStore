@@ -13,8 +13,9 @@ class AppFullScreenController: UIViewController {
     var closeHandler: ((AppImageFullScreenCell) -> Void)?
     var todayItem: TodayItem?
     var imageCell: AppImageFullScreenCell!
-    var beginOffset: CGFloat = 0
-    
+    fileprivate var beginOffset: CGFloat = 0
+    fileprivate let floatingViewHeight: CGFloat = 100
+    fileprivate let extraPadding: CGFloat = 400//避免Controller dismiss時看見FloatingView
     let closeButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -31,6 +32,60 @@ class AppFullScreenController: UIViewController {
         tv.contentInsetAdjustmentBehavior = .never
         return tv
     }()
+    let blurFloatingView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.layer.cornerRadius = 16
+        v.clipsToBounds = true
+        return v
+    }()
+    let appThumbnailImageVIew: UIImageView = {
+        let iv = UIImageView(image: UIImage(named: "garden"))
+        iv.contentMode = .scaleAspectFit
+        iv.layer.cornerRadius = 16
+        iv.clipsToBounds = true
+        return iv
+    }()
+    let appThumbnailTitleLabel: UILabel = {
+        let lb = UILabel()
+        lb.text = "Life Hack"
+        lb.font = .boldSystemFont(ofSize: 18)
+        return lb
+    }()
+    let appThumbnailSubTitleLabel: UILabel = {
+        let lb = UILabel()
+        lb.font = .systemFont(ofSize: 16)
+        lb.text = "Utilizing your Time"
+        return lb
+    }()
+    let getButton : UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setTitle("GET", for: .normal)
+        btn.backgroundColor = .darkGray
+        btn.setTitleColor(.white, for: .normal)
+        btn.layer.cornerRadius = 16
+        return btn
+    }()
+    lazy var vStackView: UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [
+           appThumbnailTitleLabel,
+           appThumbnailSubTitleLabel
+          ])
+        sv.axis = .vertical
+        sv.spacing = 6
+        return sv
+       }()
+    lazy var hStackView: UIStackView = {
+       let sv = UIStackView(arrangedSubviews: [
+        appThumbnailImageVIew,
+        vStackView,
+        getButton
+       ])
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.spacing = 16
+        sv.alignment = .center
+        return sv
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -42,7 +97,7 @@ class AppFullScreenController: UIViewController {
         fullScreenTableView.delegate = self
         fullScreenTableView.dataSource = self
         setUpContstrints()
-        
+        setUpBlurEffectView()
     }
     fileprivate func setUpContstrints(){
         view.addSubview(fullScreenTableView)
@@ -52,6 +107,28 @@ class AppFullScreenController: UIViewController {
         closeButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 12).isActive = true
         closeButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
         closeButton.heightAnchor.constraint(equalToConstant: 38).isActive = true
+    }
+    fileprivate func setUpBlurEffectView(){
+        view.addSubview(blurFloatingView)
+        blurFloatingView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
+        blurFloatingView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
+        blurFloatingView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: floatingViewHeight + extraPadding).isActive = true
+        blurFloatingView.heightAnchor.constraint(equalToConstant: floatingViewHeight).isActive = true
+        let blurEffect = UIBlurEffect(style: .regular)
+        let effectView = UIVisualEffectView(effect: blurEffect)
+        effectView.translatesAutoresizingMaskIntoConstraints = false
+        blurFloatingView.addSubview(effectView)
+        blurFloatingView.addSubview(hStackView)
+        effectView.fillSuperView()
+        //sub views
+        appThumbnailImageVIew.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        appThumbnailImageVIew.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        getButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        getButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        hStackView.topAnchor.constraint(equalTo: blurFloatingView.topAnchor, constant: 12).isActive = true
+        hStackView.leftAnchor.constraint(equalTo: blurFloatingView.leftAnchor, constant: 12).isActive = true
+        hStackView.rightAnchor.constraint(equalTo: blurFloatingView.rightAnchor, constant: -12).isActive = true
+        hStackView.bottomAnchor.constraint(equalTo: blurFloatingView.bottomAnchor, constant: -12).isActive = true
     }
     @objc fileprivate func closeFullScreen(button: UIButton){
         button.isHidden = true
@@ -117,5 +194,17 @@ extension AppFullScreenController: UITableViewDelegate, UITableViewDataSource {
             scrollView.isScrollEnabled = false
             scrollView.isScrollEnabled = true
         }
+        let window = UIApplication.shared.keyWindow
+        guard let bottomPadding = window?.safeAreaInsets.bottom else {
+            return
+        }
+        //Floating View Controll
+        let shouldShowFloatingView = scrollView.contentOffset.y > 100
+        let translationY = -(floatingViewHeight + bottomPadding + extraPadding)
+        let transform = shouldShowFloatingView ? CGAffineTransform(translationX: 0, y: translationY) : .identity
+        UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            self.blurFloatingView.transform = transform
+        })
+        
     }
 }
