@@ -20,16 +20,20 @@ class SearchResultCell: UICollectionViewCell {
             infoStackView.appCategoryLabel.text = result!.primaryGenreName
             infoStackView.appRatingLabel.text = "Rating: \(result!.averageUserRating ?? 0)"
             //有些App沒有足夠的截圖
-            if result!.screenshotUrls.count > 0 {
-                let imageURL1 = URL(string: result!.screenshotUrls[0])
+            guard let screenshotUrls = result!.screenshotUrls else {
+                print("Can't get screenshot url")
+                return
+            }
+            if screenshotUrls.count > 0 {
+                let imageURL1 = URL(string: screenshotUrls[0])
                 screenShotImageStackView.screenShotImageView1.sd_setImage(with: imageURL1)
             }
-            if result!.screenshotUrls.count > 1 {
-                let imageURL2 = URL(string: result!.screenshotUrls[1])
+            if screenshotUrls.count > 1 {
+                let imageURL2 = URL(string: screenshotUrls[1])
                 screenShotImageStackView.screenShotImageView2.sd_setImage(with: imageURL2)
             }
-            if result!.screenshotUrls.count > 2 {
-                let imageURL3 = URL(string: result!.screenshotUrls[2])
+            if screenshotUrls.count > 2 {
+                let imageURL3 = URL(string: screenshotUrls[2])
                 screenShotImageStackView.screenShotImageView3.sd_setImage(with: imageURL3)
             }
 

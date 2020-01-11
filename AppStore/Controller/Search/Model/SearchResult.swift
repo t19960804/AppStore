@@ -18,13 +18,15 @@ struct Result: Decodable {
     let primaryGenreName: String
     //有可能無值,故為Optional
     var averageUserRating: Float?
-    let screenshotUrls: [String]
+    var screenshotUrls: [String]?
     //icon
     let artworkUrl100: String
     let formattedPrice: String?
-    let description: String
+    var description: String?
     var releaseNotes: String?
     let trackId: Int
+    var artistName: String?
+    var collectionName: String?
 }
 
 
