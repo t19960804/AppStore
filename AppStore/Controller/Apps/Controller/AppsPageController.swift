@@ -14,7 +14,7 @@ class AppsPageController: BaseListController {
     var socialAppGroups = [SocialApp]()
     
     let activityIndicator: UIActivityIndicatorView = {
-        let ai = UIActivityIndicatorView(style: .whiteLarge)
+        let ai = UIActivityIndicatorView(style: .large)
         ai.translatesAutoresizingMaskIntoConstraints = false
         ai.color = .black
         ai.startAnimating()

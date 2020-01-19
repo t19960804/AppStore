@@ -40,15 +40,15 @@ class MusicController: BaseListController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackCell.cellID, for: indexPath) as! TrackCell
         cell.music = musicFeedsResult[indexPath.item]
-        let isNeedFetchMoreData = indexPath.item == musicFeedsResult.count - 1
-        if isNeedFetchMoreData && !isPaginating && !isShortOfData{
+        let needFetchMoreData = indexPath.item == musicFeedsResult.count - 1
+        if needFetchMoreData && !isPaginating && !isShortOfData{
             isPaginating = true
             fetchMoreData()
         }
         return cell
     }
     //viewDiaload做fetch,陣列的筆數為20筆
-    //每次fetchMore陣列會多20筆(offset為資料request的起始點)
+    //每次fetch陣列會多20筆(offset為資料request的起始點)
     fileprivate func fetchMoreData(){
         let string = "https://itunes.apple.com/search?term=Backstreet&offset=\(musicFeedsResult.count)&limit=\(requestLimit)"
         NetworkService.shared.fetchMusicFeeds(urlString: string) { (result, error) in
@@ -57,7 +57,6 @@ class MusicController: BaseListController {
                 return
             }
             self.isShortOfData = result?.results.count == 0
-            //之前的fetch加上新的fetch
             self.musicFeedsResult += result?.results ?? []
             //載入的速度太快,footer太快就消失,所以讓執行緒延遲兩秒
             sleep(2)

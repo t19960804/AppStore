@@ -11,7 +11,7 @@ import UIKit
 class TrackLoadingFooter: UICollectionReusableView {
     static let footerID = "footer"
     let loadingIndicator: UIActivityIndicatorView = {
-        let iv = UIActivityIndicatorView(style: .whiteLarge)
+        let iv = UIActivityIndicatorView(style: .large)
         iv.color = .darkGray
         iv.startAnimating()
         return iv

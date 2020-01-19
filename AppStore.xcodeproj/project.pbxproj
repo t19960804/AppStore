@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0B04704023C19E1F006D4900 /* TrackLoadingFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B04703F23C19E1F006D4900 /* TrackLoadingFooter.swift */; };
+		0B04704323D2BBA1006D4900 /* CompositionlVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B04704223D2BBA1006D4900 /* CompositionlVIew.swift */; };
+		0B04704523D2C4A8006D4900 /* CompositionalCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B04704423D2C4A8006D4900 /* CompositionalCollectionViewController.swift */; };
 		0B10C55622EC421E0075E6A9 /* MainTabBarContrller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B10C55522EC421E0075E6A9 /* MainTabBarContrller.swift */; };
 		0B10C55922EC57E00075E6A9 /* AppsSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B10C55822EC57E00075E6A9 /* AppsSearchController.swift */; };
 		0B10C55D22ED48340075E6A9 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B10C55C22ED48340075E6A9 /* SearchResultCell.swift */; };
@@ -59,6 +61,8 @@
 
 /* Begin PBXFileReference section */
 		0B04703F23C19E1F006D4900 /* TrackLoadingFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackLoadingFooter.swift; sourceTree = "<group>"; };
+		0B04704223D2BBA1006D4900 /* CompositionlVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionlVIew.swift; sourceTree = "<group>"; };
+		0B04704423D2C4A8006D4900 /* CompositionalCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionalCollectionViewController.swift; sourceTree = "<group>"; };
 		0B10C55522EC421E0075E6A9 /* MainTabBarContrller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarContrller.swift; sourceTree = "<group>"; };
 		0B10C55822EC57E00075E6A9 /* AppsSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsSearchController.swift; sourceTree = "<group>"; };
 		0B10C55C22ED48340075E6A9 /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
@@ -124,9 +128,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0B04704123D2BB6F006D4900 /* CompositionalLayout */ = {
+			isa = PBXGroup;
+			children = (
+				0B04704223D2BBA1006D4900 /* CompositionlVIew.swift */,
+				0B04704423D2C4A8006D4900 /* CompositionalCollectionViewController.swift */,
+			);
+			path = CompositionalLayout;
+			sourceTree = "<group>";
+		};
 		0B10C55722EC57AA0075E6A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				0B04704123D2BB6F006D4900 /* CompositionalLayout */,
 				0B10C56222ED93510075E6A9 /* MainTabBar */,
 				0B10C55A22ED48140075E6A9 /* Search */,
 				0BF2D7D72307A8C900874DF1 /* Apps */,
@@ -520,6 +534,7 @@
 				0B10C56922F684010075E6A9 /* SearchResult.swift in Sources */,
 				0B28370623C191FF00A0767C /* MusicController.swift in Sources */,
 				0B24C8DF235037E700CFFB6C /* TodayCell.swift in Sources */,
+				0B04704523D2C4A8006D4900 /* CompositionalCollectionViewController.swift in Sources */,
 				0B844E7D238A447F00696313 /* MultipleAppsHeader.swift in Sources */,
 				0BF2D7D92307A92A00874DF1 /* AppsPageController.swift in Sources */,
 				0BB0D50D234065F900F64725 /* UserReviewCell.swift in Sources */,
@@ -527,6 +542,7 @@
 				0B7DB04D22EC403200BD49B5 /* AppDelegate.swift in Sources */,
 				0BF2D7DB2307A97200874DF1 /* BaseListController.swift in Sources */,
 				0B144536235C29E50095D8B8 /* AppDescriptionCell.swift in Sources */,
+				0B04704323D2BBA1006D4900 /* CompositionlVIew.swift in Sources */,
 				0BF2D7ED2308F79C00874DF1 /* AppsCategoryCell.swift in Sources */,
 				0BD986B2236D440B000E5AC4 /* TodayItem.swift in Sources */,
 				0BF2D7D622FD334700874DF1 /* NetworkService.swift in Sources */,
@@ -699,6 +715,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CH2Q45S7FJ;
 				INFOPLIST_FILE = AppStore/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -718,6 +735,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CH2Q45S7FJ;
 				INFOPLIST_FILE = AppStore/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

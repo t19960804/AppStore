@@ -15,7 +15,7 @@ class TodayController: BaseListController {
     var fullScreenController: AppFullScreenController?
     var todayItems = [TodayItem]()
     let activityIndicator: UIActivityIndicatorView = {
-        let ai = UIActivityIndicatorView(style: .whiteLarge)
+        let ai = UIActivityIndicatorView(style: .large)
         ai.translatesAutoresizingMaskIntoConstraints = false
         ai.color = .darkGray
         ai.startAnimating()
