@@ -41,6 +41,7 @@ class AppsPageHeaderCell: UICollectionViewCell {
         iv.layer.cornerRadius = 8
         iv.clipsToBounds = true
         iv.widthAnchor.constraint(equalToConstant: frame.width).isActive = true
+        iv.image = #imageLiteral(resourceName: "holiday")
         return iv
     }()
     lazy var verticalStackView: UIStackView = {
