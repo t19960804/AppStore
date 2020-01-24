@@ -26,17 +26,20 @@ class AppsCategoryCell: UICollectionViewCell {
         iv.contentMode = .scaleAspectFill
         iv.widthAnchor.constraint(equalToConstant: 64).isActive = true
         iv.heightAnchor.constraint(equalToConstant: 64).isActive = true
+        iv.backgroundColor = .blue
         return iv
     }()
     let nameLabel: UILabel = {
         let lb = UILabel()
         lb.font = .systemFont(ofSize: 20)
+        lb.text = "App Name"
         return lb
     }()
     let companyNameLabel: UILabel = {
         let lb = UILabel()
         lb.font = .systemFont(ofSize: 13)
         lb.textColor = .lightGray
+        lb.text = "Facebook"
         return lb
     }()
     let getButton: UIButton = {

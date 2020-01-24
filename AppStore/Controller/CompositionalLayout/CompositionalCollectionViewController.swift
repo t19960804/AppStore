@@ -9,7 +9,9 @@
 import UIKit
 
 class CompositionalCollectionViewController: UICollectionViewController {
-    let cellID = "CompositionalTest"
+    let headerID = "CompositionalHeaderID"
+    let multipleCellID = "CompositionalMultipleCellID"
+    
     static let cellWidthRatio: CGFloat = 0.8
     
     init() {
@@ -22,8 +24,7 @@ class CompositionalCollectionViewController: UICollectionViewController {
                 case SectionType.MultipleAppsSection.rawValue:
                     return CompositionalCollectionViewController.setUpMultipleAppsSection()
             default:
-                print("Unknow Section")
-                return nil
+                return CompositionalCollectionViewController.setUpMultipleAppsSection()
             }
             
         }
@@ -49,6 +50,11 @@ class CompositionalCollectionViewController: UICollectionViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging
         section.contentInsets.leading = 23
+        //Header設定,取代referenceSizeForHeaderInSection()
+        //kind可以是任何字串,在實作viewForSupplementaryElementOfKind的時候,用來分辨header或footer
+        //並提供要呈現的View
+        let kind = UICollectionView.elementKindSectionHeader
+        section.boundarySupplementaryItems = [NSCollectionLayoutBoundarySupplementaryItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60)), elementKind: kind, alignment: .topLeading)]
         return section
     }
     required init?(coder: NSCoder) {
@@ -59,14 +65,16 @@ class CompositionalCollectionViewController: UICollectionViewController {
         collectionView.backgroundColor = .white
         navigationItem.title = "App"
         navigationController?.navigationBar.prefersLargeTitles = true
+        collectionView.register(CompositionalSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerID)
         collectionView.register(AppsPageHeaderCell.self, forCellWithReuseIdentifier: AppsPageHeaderCell.cellID)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
+        collectionView.register(AppsCategoryCell.self, forCellWithReuseIdentifier: multipleCellID)
+        
     }
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 4
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 9
+        return 10
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
@@ -74,14 +82,17 @@ class CompositionalCollectionViewController: UICollectionViewController {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppsPageHeaderCell.cellID, for: indexPath)
             return cell
         case SectionType.MultipleAppsSection.rawValue:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
-            cell.backgroundColor = .blue
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: multipleCellID, for: indexPath)
             return cell
         default:
-            print("Unknow Cell")
-            return UICollectionViewCell()
+           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: multipleCellID, for: indexPath)
+            return cell
         }
         
+    }
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerID, for: indexPath)
+        return header
     }
     enum SectionType: Int {
         case TopSection
