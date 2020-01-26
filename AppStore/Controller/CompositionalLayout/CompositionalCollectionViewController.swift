@@ -11,9 +11,13 @@ import UIKit
 class CompositionalCollectionViewController: UICollectionViewController {
     let headerID = "CompositionalHeaderID"
     let multipleCellID = "CompositionalMultipleCellID"
+    var socialApps = [SocialApp]()
+    var editorChoiceGames: AppsFeed?
+    var topGrossingApps: AppsFeed?
+    var topFreeGames: AppsFeed?
     
     static let cellWidthRatio: CGFloat = 0.8
-    
+
     init() {
         //Multiple Section,根據不同的section,回傳不同的layout
         let layout = UICollectionViewCompositionalLayout { (sectionNumber, _) -> NSCollectionLayoutSection? in
@@ -21,8 +25,6 @@ class CompositionalCollectionViewController: UICollectionViewController {
                 //在self初始化完成之前,不能在closure內使用self.方法,會報錯
                 case SectionType.TopSection.rawValue:
                     return CompositionalCollectionViewController.setUpTopSection()
-                case SectionType.MultipleAppsSection.rawValue:
-                    return CompositionalCollectionViewController.setUpMultipleAppsSection()
             default:
                 return CompositionalCollectionViewController.setUpMultipleAppsSection()
             }
@@ -68,34 +70,126 @@ class CompositionalCollectionViewController: UICollectionViewController {
         collectionView.register(CompositionalSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerID)
         collectionView.register(AppsPageHeaderCell.self, forCellWithReuseIdentifier: AppsPageHeaderCell.cellID)
         collectionView.register(AppsCategoryCell.self, forCellWithReuseIdentifier: multipleCellID)
+        //一次性抓取所有json,並且只reload collectionview一次
+        fetchAppsData()
+    }
+    fileprivate func fetchAppsData(){
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        NetworkService.shared.fetchSocialApps { (apps, error) in
+            if let error = error {
+                print("Fetch SocailApps failed:\(error)")
+                return
+            }
+            self.socialApps = apps ?? []
+            dispatchGroup.leave()
+        }
         
+        dispatchGroup.enter()
+        NetworkService.shared.fetchEditorsChoiceGames { (feeds, error) in
+            if let error = error {
+                print("Fetch EditorsChoiceGames failed:\(error)")
+                return
+            }
+            self.editorChoiceGames = feeds
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        NetworkService.shared.fetchTopGrossingApps { (feeds, error) in
+            if let error = error {
+                print("Fetch TopGrossingApps failed:\(error)")
+                return
+            }
+            self.topGrossingApps = feeds
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        NetworkService.shared.fetchTopFreeGames { (feeds, error) in
+            if let error = error {
+                print("Fetch TopFreeGames failed:\(error)")
+                return
+            }
+            self.topFreeGames = feeds
+            dispatchGroup.leave()
+        }
+        dispatchGroup.notify(queue: .main) {
+            self.collectionView.reloadData()
+        }
     }
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 4
+        return SectionType.allCases.count
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        let type = SectionType.allCases[section]
+        switch type {
+        case .TopSection:
+            return socialApps.count
+        case .EditorChoiceGames:
+            return editorChoiceGames?.feed.results.count ?? 0
+        case .TopGrossingApps:
+            return topGrossingApps?.feed.results.count ?? 0
+        case .TopFreeGames:
+            return topFreeGames?.feed.results.count ?? 0
+        }
     }
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case SectionType.TopSection.rawValue:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppsPageHeaderCell.cellID, for: indexPath)
-            return cell
-        case SectionType.MultipleAppsSection.rawValue:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: multipleCellID, for: indexPath)
+        let type = SectionType.allCases[indexPath.section]
+        
+        switch type {
+        case .TopSection:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppsPageHeaderCell.cellID, for: indexPath) as! AppsPageHeaderCell
+            cell.feed = socialApps[indexPath.item]
             return cell
         default:
-           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: multipleCellID, for: indexPath)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: multipleCellID, for: indexPath) as! AppsCategoryCell
+            if type == .EditorChoiceGames {
+                cell.feedResult = editorChoiceGames?.feed.results[indexPath.item]
+            } else if type == .TopGrossingApps {
+                cell.feedResult = topGrossingApps?.feed.results[indexPath.item]
+            } else {
+                cell.feedResult = topFreeGames?.feed.results[indexPath.item]
+            }
             return cell
         }
         
     }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        var id = ""
+        let type = SectionType.allCases[indexPath.section]
+        switch type {
+        case .TopSection:
+            id = socialApps[indexPath.item].id
+        case .EditorChoiceGames:
+            id = editorChoiceGames?.feed.results[indexPath.item].id ?? ""
+        case .TopGrossingApps:
+            id = topGrossingApps?.feed.results[indexPath.item].id ?? ""
+        case .TopFreeGames:
+            id = topFreeGames?.feed.results[indexPath.item].id ?? ""
+        }
+        let detailController = AppDetailController(appID: id)
+        navigationController?.pushViewController(detailController, animated: true)
+    }
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerID, for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerID, for: indexPath) as! CompositionalSectionHeader
+        let type = SectionType.allCases[indexPath.section]
+        switch type {
+        case .EditorChoiceGames:
+            header.titleLabel.text = editorChoiceGames?.feed.title
+        case .TopGrossingApps:
+            header.titleLabel.text = topGrossingApps?.feed.title
+        case .TopFreeGames:
+            header.titleLabel.text = topFreeGames?.feed.title
+        default:
+            print("It's top section")
+        }
         return header
     }
-    enum SectionType: Int {
+    enum SectionType: Int, CaseIterable {
         case TopSection
-        case MultipleAppsSection
+        case EditorChoiceGames
+        case TopGrossingApps
+        case TopFreeGames
     }
 }

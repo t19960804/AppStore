@@ -26,7 +26,6 @@ class AppsCategoryCell: UICollectionViewCell {
         iv.contentMode = .scaleAspectFill
         iv.widthAnchor.constraint(equalToConstant: 64).isActive = true
         iv.heightAnchor.constraint(equalToConstant: 64).isActive = true
-        iv.backgroundColor = .blue
         return iv
     }()
     let nameLabel: UILabel = {

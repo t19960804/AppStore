@@ -12,7 +12,6 @@ class CompositionalSectionHeader: UICollectionReusableView {
     let titleLabel: UILabel = {
         let lb = UILabel()
         lb.translatesAutoresizingMaskIntoConstraints = false
-        lb.text = "Editors' Choice Games"
         lb.font = .boldSystemFont(ofSize: 30)
         return lb
     }()
