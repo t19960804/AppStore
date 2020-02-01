@@ -9,6 +9,6 @@
 import Foundation
 
 //一開始就是陣列
-struct SocialApp: Decodable {
+struct SocialApp: Decodable, Hashable {
     let id, name, imageUrl, tagline: String
 }
