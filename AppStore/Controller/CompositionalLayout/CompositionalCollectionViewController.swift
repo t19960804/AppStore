@@ -13,6 +13,8 @@ class CompositionalCollectionViewController: UICollectionViewController {
     let multipleCellID = "CompositionalMultipleCellID"
     
     static let cellWidthRatio: CGFloat = 0.8
+    var topGrossingFeed: Feed?
+    var editorChoiceGameFeed: Feed?
     //DiffableDataSource為了在資料變化時辨識差異，知道哪些是新增刪除的資料，需要設定 generic type，描述能辨識 section & item 的型別。
     //section & item 的型別必須遵從 protocol Hashable，因為這樣表格的 section & item 資料才能產生可判斷是否為同一筆資料的 hash value，DiffableDataSource 將用 hash value 判斷資料的變化，再用動畫呈現新增刪除的效果。
     //一定要宣告成全域變數,不然會從記憶體消失
@@ -29,9 +31,9 @@ class CompositionalCollectionViewController: UICollectionViewController {
         return nil
     }
     init() {
-        //Multiple Section,根據不同的section,回傳不同的layout
+        //Multiple Section,根據appendSection中的section,回傳對應的layout
         let layout = UICollectionViewCompositionalLayout { (sectionNumber, _) -> NSCollectionLayoutSection? in
-            //根據appendSection的陣列順序去做switch
+            
             switch sectionNumber {
                 //在self初始化完成之前,不能在closure內使用self.方法,會報錯
                 case SectionType.TopSection.rawValue:
@@ -42,10 +44,6 @@ class CompositionalCollectionViewController: UICollectionViewController {
         }
         super.init(collectionViewLayout: layout)
     }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     static func setUpTopSection() -> NSCollectionLayoutSection {
         //若要讓畫面的右邊有一部分下個cell,在group為fractionalWidth(1)的情況下,調整item的寬是沒有用的,
         //因為group的寬度還是會佔滿,要調整的是group本身的寬
@@ -86,6 +84,7 @@ class CompositionalCollectionViewController: UICollectionViewController {
         collectionView.register(AppsCategoryCell.self, forCellWithReuseIdentifier: multipleCellID)
         setUpDiffableDataSource()
     }
+    
     fileprivate func setUpDiffableDataSource(){
         collectionView.dataSource = diffableDataSource
         setupSectionHeader()
@@ -109,9 +108,11 @@ class CompositionalCollectionViewController: UICollectionViewController {
                     //SocialApp
                     snapShot.appendItems(apps ?? [], toSection: .TopSection)
                     //TopGrossing
+                    self.topGrossingFeed = appsFeed?.feed
                     let results = appsFeed?.feed.results
                     snapShot.appendItems(results ?? [], toSection: .TopGrossingApps)
                     //Editor Choice
+                    self.editorChoiceGameFeed = gamesFeed?.feed
                     let gameResults = gamesFeed?.feed.results
                     snapShot.appendItems(gameResults ?? [], toSection: .EditorChoiceGames)
                     self.diffableDataSource.apply(snapShot)
@@ -127,9 +128,9 @@ class CompositionalCollectionViewController: UICollectionViewController {
                 let snapShot = self.diffableDataSource.snapshot()
                 let section = snapShot.sectionIdentifier(containingItem: item)!
                 if section == .TopGrossingApps {
-                    header.titleLabel.text = "Top Grossing iPhone Apps"
+                    header.titleLabel.text = self.topGrossingFeed?.title
                 } else {
-                    header.titleLabel.text = "Editor's Choice Games"
+                    header.titleLabel.text = self.editorChoiceGameFeed?.title
                 }
             }
             return header
@@ -140,12 +141,14 @@ class CompositionalCollectionViewController: UICollectionViewController {
         case TopSection
         case TopGrossingApps
         case EditorChoiceGames
-//        case TopFreeGames
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
 //appendSection(numberOfSection)
-//appendItems(numberOfItemsInSection),讓items跟section綁定
+//appendItems(numberOfItemsInSection),讓items跟section綁定(決定indexPath)
 
 //機制猜測
 //設定section的layout時,會根據appendSections的陣列索引做switch

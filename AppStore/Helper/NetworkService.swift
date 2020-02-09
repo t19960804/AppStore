@@ -52,10 +52,6 @@ class NetworkService {
     //但這邊獨立出一個Network Layer,所以為了跟controller溝通,故透過completion handler回傳
     func fetchGenericDataFromItunesAPI<T: Decodable>(urlString: String, completion: @escaping (T?, Error?) -> Void){
         guard let url = URL(string: urlString) else { return }
-        //為何需要.resume()?
-        //URLSessionTask 物件想成產生一個下載或上傳資料的任務。但它只是產生任務，並不代表任務開始執行，要等呼叫 resume 才會開始執行
-        //為何叫作.resume()而不是.start()?
-        //剛產生的 task 將處在暫停的狀態(suspended state)，因此我們必須呼叫 resume() 來啟動它
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 completion(nil,error)
