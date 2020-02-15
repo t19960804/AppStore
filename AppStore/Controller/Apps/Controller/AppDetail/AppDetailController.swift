@@ -9,14 +9,14 @@
 import UIKit
 
 class AppDetailController: BaseListController {
-    //SearchController / AppsController透過appID進入DetailController
-    //DetailController"依賴"appID來做fetchData
-    let appID: String
+
+    let appID: String//"依賴"appID來做fetchData
     var app: Result?
     var reviews: UserReviews?
     fileprivate let dispatchGroup = DispatchGroup()
     
-    //依賴注入,強迫開發者要傳入appID,保證appID有值
+    //依賴注入
+    //https://medium.com/@hung_yanbin/%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E7%94%A8-dependency-injection-for-android-developer-e7b65704a5ac
     init(appID: String){
         self.appID = appID
         super.init()

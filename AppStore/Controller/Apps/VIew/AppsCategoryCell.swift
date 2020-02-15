@@ -9,8 +9,13 @@
 import UIKit
 import SDWebImage
 
+protocol AppsCategoryCellDelegate {
+    func handleGet(button: UIButton)
+}
 class AppsCategoryCell: UICollectionViewCell {
     static let id = "Cell"
+    var delegate: AppsCategoryCellDelegate?
+    
     var feedResult: FeedResult! {
         didSet {
             appImageView.sd_setImage(with: URL(string: feedResult.artworkUrl100))
@@ -41,7 +46,7 @@ class AppsCategoryCell: UICollectionViewCell {
         lb.text = "Facebook"
         return lb
     }()
-    let getButton: UIButton = {
+    lazy var getButton: UIButton = {
         let btn = UIButton(type: .system)
         btn.backgroundColor = .brown
         btn.setTitle("GET", for: .normal)
@@ -49,6 +54,7 @@ class AppsCategoryCell: UICollectionViewCell {
         btn.backgroundColor = UIColor(white: 0.95, alpha: 1)
         btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         btn.layer.cornerRadius = 10
+        btn.addTarget(self, action: #selector(handleGet), for: .touchUpInside)
         return btn
     }()
     lazy var verticalStackView: UIStackView = {
@@ -73,7 +79,9 @@ class AppsCategoryCell: UICollectionViewCell {
         addSubview(wholeStackView)
         wholeStackView.fillSuperView()
     }
-    
+    @objc func handleGet(button: UIButton){
+        delegate?.handleGet(button: button)
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

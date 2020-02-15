@@ -26,6 +26,7 @@ class CompositionalCollectionViewController: UICollectionViewController {
         } else if let result = object as? FeedResult {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.multipleCellID, for: indexPath) as! AppsCategoryCell
             cell.feedResult = result
+            cell.delegate = self
             return cell
         }
         return nil
@@ -136,7 +137,17 @@ class CompositionalCollectionViewController: UICollectionViewController {
             return header
         })
     }
-
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = diffableDataSource.itemIdentifier(for: indexPath)
+        var id = ""
+        if let socialApp = item as? SocialApp {
+            id = socialApp.id
+        } else if let grossingApp = item as? FeedResult {
+            id = grossingApp.id
+        }
+        let appDetailController = AppDetailController(appID: id)
+        navigationController?.pushViewController(appDetailController, animated: true)
+    }
     enum SectionType: Int, CaseIterable {
         case TopSection
         case TopGrossingApps
@@ -150,7 +161,28 @@ class CompositionalCollectionViewController: UICollectionViewController {
 //appendSection(numberOfSection)
 //appendItems(numberOfItemsInSection),讓items跟section綁定(決定indexPath)
 
-//機制猜測
+//DiffableDataSource機制
 //設定section的layout時,會根據appendSections的陣列索引做switch
-//appendItems會根據toSection參數,比對appendSection陣列的索引去決定每個append進去item的indexPath,以及決定item要被放入何種section的layout
+//appendItems會根據toSection參數,比對appendSection陣列的索引去決定item的indexPath,以及決定item要被放入何種section的layout
 //apply之後,要dequeueCell時再將item的indexPath填入做render
+
+extension CompositionalCollectionViewController: AppsCategoryCellDelegate {
+    func handleGet(button: UIButton) {
+        //從button一層層往上找superVie直到找到Cell
+        var superView = button.superview
+        while superView != nil {
+            if let cell = superView as? UICollectionViewCell {
+                guard let indexPath = collectionView.indexPath(for: cell) else { return }
+                guard let item = diffableDataSource.itemIdentifier(for: indexPath) else { return }
+                var snapshot = diffableDataSource.snapshot()
+                snapshot.deleteItems([item])
+                //要apply snapshot讓diffableDataSource比較差異才有刪除動畫
+                diffableDataSource.apply(snapshot)
+                break
+            }
+            superView = superView?.superview
+        }
+    }
+    
+    
+}
