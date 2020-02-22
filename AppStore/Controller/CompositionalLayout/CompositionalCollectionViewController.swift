@@ -15,6 +15,7 @@ class CompositionalCollectionViewController: UICollectionViewController {
     static let cellWidthRatio: CGFloat = 0.8
     var topGrossingFeed: Feed?
     var editorChoiceGameFeed: Feed?
+    var topFreeGameFeed: Feed?
     //DiffableDataSource為了在資料變化時辨識差異，知道哪些是新增刪除的資料，需要設定 generic type，描述能辨識 section & item 的型別。
     //section & item 的型別必須遵從 protocol Hashable，因為這樣表格的 section & item 資料才能產生可判斷是否為同一筆資料的 hash value，DiffableDataSource 將用 hash value 判斷資料的變化，再用動畫呈現新增刪除的效果。
     //一定要宣告成全域變數,不然會從記憶體消失
@@ -76,18 +77,24 @@ class CompositionalCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
+        //Navigation
         navigationItem.title = "App"
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = .init(title: "Fetch New Data", style: .plain, target: self, action: #selector(fetchNewData))
         //Top Section
         collectionView.register(AppsPageHeaderCell.self, forCellWithReuseIdentifier: AppsPageHeaderCell.cellID)
         //Multiple Apps Section
         collectionView.register(CompositionalSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerID)
         collectionView.register(AppsCategoryCell.self, forCellWithReuseIdentifier: multipleCellID)
+        //Refresh
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        //DataSource
+        collectionView.dataSource = diffableDataSource
         setUpDiffableDataSource()
     }
     
     fileprivate func setUpDiffableDataSource(){
-        collectionView.dataSource = diffableDataSource
         setupSectionHeader()
         NetworkService.shared.fetchSocialApps { (apps, error) in
             if let error = error {
@@ -128,14 +135,36 @@ class CompositionalCollectionViewController: UICollectionViewController {
             if let item = self.diffableDataSource.itemIdentifier(for: indexPath) {
                 let snapShot = self.diffableDataSource.snapshot()
                 let section = snapShot.sectionIdentifier(containingItem: item)!
-                if section == .TopGrossingApps {
+                switch section {
+                case .TopGrossingApps:
                     header.titleLabel.text = self.topGrossingFeed?.title
-                } else {
+                case .EditorChoiceGames:
                     header.titleLabel.text = self.editorChoiceGameFeed?.title
+                default:
+                    header.titleLabel.text = self.topFreeGameFeed?.title
                 }
             }
             return header
         })
+    }
+    @objc fileprivate func fetchNewData(){
+        NetworkService.shared.fetchTopFreeGames { (appsFeed, error) in
+            if let error = error {
+                print("Fetch Top frree Games failed:\(error)")
+                return
+            }
+            self.topFreeGameFeed = appsFeed?.feed
+            var snapshot = self.diffableDataSource.snapshot()
+            snapshot.insertSections([.TopFree], afterSection: .TopSection)
+            snapshot.appendItems(appsFeed?.feed.results ?? [], toSection: .TopFree)
+            self.diffableDataSource.apply(snapshot)
+        }
+    }
+    @objc fileprivate func handleRefresh(){
+        collectionView.refreshControl?.endRefreshing()
+        var snapShot = diffableDataSource.snapshot()
+        snapShot.deleteSections([.TopFree])
+        diffableDataSource.apply(snapShot)
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = diffableDataSource.itemIdentifier(for: indexPath)
@@ -152,6 +181,7 @@ class CompositionalCollectionViewController: UICollectionViewController {
         case TopSection
         case TopGrossingApps
         case EditorChoiceGames
+        case TopFree
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
